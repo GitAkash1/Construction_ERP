@@ -1,0 +1,36 @@
+# Environment files & Virtual Environments
+.env
+.env/
+.venv
+.env/
+.env.local
+.env.*
+backend/.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/staticfiles/
+backend/db.sqlite3
+staticfiles/
+db.sqlite3
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+.output/
+
+# Data dump export
+datadump.json
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

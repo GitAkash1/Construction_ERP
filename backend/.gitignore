@@ -1,0 +1,22 @@
+# Environment files & virtual environment folder
+.env
+.env/
+.env.local
+.env.*
+*.env
+
+# Python compilation & static files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+staticfiles/
+db.sqlite3
+datadump.json
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

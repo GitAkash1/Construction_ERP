@@ -1,0 +1,376 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'react-toastify/dist/ReactToastify.css';
+
+:root {
+  /* Colors */
+  --erp-primary: #2563eb;
+  --erp-primary-hover: #1d4ed8;
+  --erp-secondary: #64748b;
+  --erp-success: #10b981;
+  --erp-warning: #f59e0b;
+  --erp-danger: #ef4444;
+  --erp-info: #3b82f6;
+
+  /* Backgrounds */
+  --erp-bg-app: #f8fafc;
+  --erp-bg-surface: #ffffff;
+  --erp-bg-sidebar: #0f172a;
+
+  /* Text */
+  --erp-text-main: #1e293b;
+  --erp-text-muted: #64748b;
+  --erp-text-sidebar: #cbd5e1;
+  --erp-text-sidebar-hover: #ffffff;
+  --erp-text-sidebar-active: #ffffff;
+
+  /* Borders */
+  --erp-border: #e2e8f0;
+
+  /* Layout */
+  --erp-sidebar-width: 250px;
+  --erp-header-height: 64px;
+
+  /* Shadows */
+  --erp-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --erp-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --erp-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--erp-bg-app);
+  color: var(--erp-text-main);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Overrides for Bootstrap */
+.btn-primary {
+  background-color: var(--erp-primary);
+  border-color: var(--erp-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--erp-primary-hover);
+  border-color: var(--erp-primary-hover);
+}
+
+.card {
+  background-color: var(--erp-bg-surface);
+  border: 1px solid var(--erp-border);
+  border-radius: 0.5rem;
+  box-shadow: var(--erp-shadow-sm);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: var(--erp-shadow);
+}
+
+.table th {
+  background-color: #f1f5f9;
+  color: var(--erp-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+}
+
+.table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+  border-radius: 0.25rem;
+}
+
+/* Utility classes */
+.text-muted {
+  color: var(--erp-text-muted) !important;
+}
+
+/* Sidebar Styles */
+.erp-sidebar {
+  background: #0d1527; /* Rich deep navy construction-grade tone */
+  color: #cbd5e1;
+  width: var(--erp-sidebar-width);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: transform 0.3s ease;
+}
+
+/* Custom Scrollbar for independent scroll behavior */
+.erp-sidebar-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 1.5rem;
+}
+
+.erp-sidebar-scroll-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.erp-sidebar-scroll-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.erp-sidebar-scroll-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.erp-sidebar-scroll-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.erp-sidebar-header {
+  height: var(--erp-header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  gap: 0.75rem;
+  user-select: none;
+}
+
+.erp-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.erp-sidebar:hover .erp-logo-container {
+  transform: scale(1.05);
+}
+
+.erp-sidebar-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.erp-brand-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+.erp-nav-menu {
+  padding: 0.25rem 0.75rem;
+}
+
+.erp-nav-item {
+  padding: 0.7rem 0.85rem;
+  margin: 0.2rem 0;
+  color: #94a3b8; /* Muted cool gray text */
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 8px;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+
+.erp-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #64748b; /* Muted icon gray */
+  transition: all 0.2s ease;
+}
+
+.erp-nav-label {
+  transition: transform 0.2s ease;
+}
+
+/* Hover State */
+.erp-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.035);
+  color: #ffffff;
+}
+
+.erp-nav-item:hover .erp-nav-icon {
+  color: #3b82f6; /* Modern brand accent blue */
+  transform: scale(1.08);
+}
+
+.erp-nav-item:hover .erp-nav-label {
+  transform: translateX(2px);
+}
+
+/* Active State */
+.erp-nav-item.active {
+  background-color: rgba(37, 99, 235, 0.08); /* Transparent blue highlight */
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.erp-nav-item.active .erp-nav-icon {
+  color: #3b82f6; /* Highlight active icon */
+}
+
+/* Left accent indicator */
+.erp-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -0.75rem; /* Extends to border edge of nav container */
+  top: 22%;
+  height: 56%;
+  width: 4px;
+  background-color: #3b82f6;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.erp-nav-section-title {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b; /* Muted blue-gray */
+  font-weight: 600;
+  user-select: none;
+}
+
+.erp-sidebar-footer {
+  margin-top: auto;
+  padding: 1.25rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  background: #090e1b; /* Slightly darker for visual grounding */
+}
+
+.erp-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 0.65rem;
+  margin-bottom: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.erp-user-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.erp-user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.erp-user-avatar-icon {
+  font-size: 1.1rem;
+  color: #3b82f6;
+}
+
+.erp-user-info {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.erp-username {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.erp-user-role {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  text-transform: capitalize;
+}
+
+.erp-logout-button {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+  font-weight: 600;
+  font-size: 0.85rem;
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.erp-logout-button:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.erp-logout-button svg {
+  transition: transform 0.2s ease;
+}
+
+.erp-logout-button:hover svg {
+  transform: translateX(2px);
+}
+
+/* Main Content Layout */
+.erp-main-wrapper {
+  margin-left: var(--erp-sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.erp-top-header {
+  height: var(--erp-header-height);
+  background-color: var(--erp-bg-surface);
+  border-bottom: 1px solid var(--erp-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.erp-page-content {
+  flex: 1;
+  padding: 2rem;
+}
