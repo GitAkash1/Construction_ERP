@@ -98,44 +98,48 @@ const WorkOrderDetail = () => {
 
   return (
     <div>
-      <div className="d-flex align-items-center mb-4 gap-3">
-        <button className="btn btn-light" onClick={() => navigate(-1)}><FiArrowLeft /></button>
-        <h2 className="fw-bold mb-0">Work Order: {workOrder.work_order_number}</h2>
-        <span className={`badge ${workOrder.status === 'Issued' ? 'bg-primary' : workOrder.status === 'In Progress' ? 'bg-info text-dark' : 'bg-secondary'}`}>
-          {workOrder.status}
-        </span>
+      <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-4 gap-3">
+        <div className="d-flex align-items-center gap-3">
+          <button className="btn btn-light rounded-circle p-2 flex-shrink-0" onClick={() => navigate(-1)}><FiArrowLeft size={20} /></button>
+          <div>
+            <h2 className="fw-bold mb-0 fs-4 fs-md-2">Work Order: {workOrder.work_order_number}</h2>
+            <span className={`badge mt-1 ${workOrder.status === 'Issued' ? 'bg-primary' : workOrder.status === 'In Progress' ? 'bg-info text-dark' : 'bg-secondary'}`}>
+              {workOrder.status}
+            </span>
+          </div>
+        </div>
       </div>
 
       <div className="row g-4 mb-4">
         {/* Info Card */}
-        <div className="col-lg-8">
+        <div className="col-12 col-lg-8">
           <div className="card h-100 border-0 shadow-sm">
             <div className="card-header bg-white border-bottom py-3">
               <h5 className="mb-0 fw-bold">Work Details</h5>
             </div>
             <div className="card-body">
               <div className="row g-3">
-                <div className="col-md-6">
+                <div className="col-12 col-sm-6">
                   <div className="text-muted small">Project</div>
                   <div className="fw-semibold">{workOrder.project_name}</div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-12 col-sm-6">
                   <div className="text-muted small">Subcontractor</div>
                   <div className="fw-semibold">{workOrder.subcontractor_name}</div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-12 col-sm-6">
                   <div className="text-muted small">BOQ Item</div>
                   <div className="fw-semibold">{workOrder.boq_item_details || 'N/A'}</div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-12 col-sm-6">
                   <div className="text-muted small">Planned Completion</div>
                   <div className="fw-semibold">{workOrder.planned_completion_date || 'N/A'}</div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-12 col-sm-6">
                   <div className="text-muted small">Work Area</div>
                   <div className="fw-semibold">{workOrder.work_area || 'N/A'}</div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-12 col-sm-6">
                   {/* Spacing/alignment */}
                 </div>
                 <div className="col-12">
@@ -145,15 +149,15 @@ const WorkOrderDetail = () => {
                 
                 <hr className="my-2" />
                 
-                <div className="col-md-4">
+                <div className="col-12 col-sm-4">
                   <div className="text-muted small">Contract Quantity</div>
                   <div className="fs-5 fw-bold">{fmt(workOrder.contract_quantity)} <span className="fs-6 text-muted">{workOrder.unit}</span></div>
                 </div>
-                <div className="col-md-4">
+                <div className="col-12 col-sm-4">
                   <div className="text-muted small">Rate</div>
                   <div className="fs-5 fw-bold text-success">₹{fmt(workOrder.rate)}</div>
                 </div>
-                <div className="col-md-4">
+                <div className="col-12 col-sm-4">
                   <div className="text-muted small">Contract Value</div>
                   <div className="fs-5 fw-bold text-primary">₹{fmt(workOrder.contract_value)}</div>
                 </div>
@@ -163,7 +167,7 @@ const WorkOrderDetail = () => {
         </div>
 
         {/* Progress Summary Card */}
-        <div className="col-lg-4">
+        <div className="col-12 col-lg-4">
           <div className="card h-100 border-0 shadow-sm">
             <div className="card-header bg-white border-bottom py-3">
               <h5 className="mb-0 fw-bold">Progress Summary</h5>
@@ -289,11 +293,11 @@ const WorkOrderDetail = () => {
 
       {/* Progress Modal */}
       {showProgressModal && (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Record Work Progress</h5>
+                <h5 className="modal-title fw-bold">Record Work Progress</h5>
                 <button type="button" className="btn-close" onClick={() => setShowProgressModal(false)}></button>
               </div>
               <form onSubmit={handleProgressSubmit}>
@@ -331,8 +335,8 @@ const WorkOrderDetail = () => {
 
       {/* Bill Modal */}
       {showBillModal && (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Create Subcontractor Bill</h5>

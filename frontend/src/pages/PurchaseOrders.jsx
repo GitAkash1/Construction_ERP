@@ -240,10 +240,10 @@ const PurchaseOrdersPage = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white">
-        <span className="text-muted small">Showing page {validCurrentPage} of {totalPages}</span>
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+        <span className="text-muted small text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button type="button" className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
@@ -263,74 +263,75 @@ const PurchaseOrdersPage = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <h2 className="fw-bold mb-0">Purchase Orders</h2>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <BackToWorkCenter />
-
-          <div style={{ width: '300px', position: 'relative' }} ref={filterComboboxRef}>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by Project Name..."
-              value={filterSearchText}
-              onChange={handleFilterSearchChange}
-              onFocus={() => setShowFilterDropdown(true)}
-            />
-            {filterSearchText && (
-              <button
-                className="btn btn-sm btn-link text-muted position-absolute end-0 top-50 translate-middle-y me-1 text-decoration-none"
-                onClick={clearFilterProject}
-                style={{ zIndex: 10, padding: 0 }}
-              >
-                ✕
-              </button>
-            )}
-            {showFilterDropdown && (
-              <ul className="list-group position-absolute w-100 shadow-sm" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
-                {projects.filter(p => p.project_name.toLowerCase().includes(filterSearchText.toLowerCase())).length > 0 ? (
-                  projects
-                    .filter(p => p.project_name.toLowerCase().includes(filterSearchText.toLowerCase()))
-                    .map(p => (
-                      <li
-                        key={p.id}
-                        className="list-group-item list-group-item-action"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleSelectFilterProject(p)}
-                      >
-                        {p.project_name}
-                      </li>
-                    ))
-                ) : (
-                  <li className="list-group-item text-muted">No projects found</li>
-                )}
-              </ul>
-            )}
-          </div>
-
-          <div className="d-flex align-items-center gap-1">
-            <input
-              type="date"
-              className="form-control"
-              value={tableDateFilter}
-              onChange={handleTableDateChange}
-              style={{ width: '150px' }}
-              title="Filter by Date"
-            />
-            {tableDateFilter && (
-              <button
-                className="btn btn-outline-secondary"
-                onClick={clearTableDateFilter}
-                title="Clear Date Filter"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
           {hasPermission('purchase_orders.create') && (
-            <button className="btn btn-primary d-flex align-items-center gap-2" onClick={() => setShowModal(true)}>
+            <button className="btn btn-primary d-flex align-items-center justify-content-center gap-2" onClick={() => setShowModal(true)}>
               <FiPlus /> New PO
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 mb-4 flex-wrap">
+        <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={filterComboboxRef}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by Project Name..."
+            value={filterSearchText}
+            onChange={handleFilterSearchChange}
+            onFocus={() => setShowFilterDropdown(true)}
+          />
+          {filterSearchText && (
+            <button
+              className="btn btn-sm btn-link text-muted position-absolute end-0 top-50 translate-middle-y me-1 text-decoration-none"
+              onClick={clearFilterProject}
+              style={{ zIndex: 10, padding: 0 }}
+            >
+              ✕
+            </button>
+          )}
+          {showFilterDropdown && (
+            <ul className="list-group position-absolute w-100 shadow-sm" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
+              {projects.filter(p => p.project_name.toLowerCase().includes(filterSearchText.toLowerCase())).length > 0 ? (
+                projects
+                  .filter(p => p.project_name.toLowerCase().includes(filterSearchText.toLowerCase()))
+                  .map(p => (
+                    <li
+                      key={p.id}
+                      className="list-group-item list-group-item-action"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleSelectFilterProject(p)}
+                    >
+                      {p.project_name}
+                    </li>
+                  ))
+              ) : (
+                <li className="list-group-item text-muted">No projects found</li>
+              )}
+            </ul>
+          )}
+        </div>
+
+        <div className="d-flex align-items-center gap-1 flex-grow-1 flex-sm-grow-0">
+          <input
+            type="date"
+            className="form-control"
+            value={tableDateFilter}
+            onChange={handleTableDateChange}
+            style={{ minWidth: '140px' }}
+            title="Filter by Date"
+          />
+          {tableDateFilter && (
+            <button
+              className="btn btn-outline-secondary"
+              onClick={clearTableDateFilter}
+              title="Clear Date Filter"
+            >
+              Clear
             </button>
           )}
         </div>
@@ -372,7 +373,7 @@ const PurchaseOrdersPage = () => {
 
       {showModal && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-xl">
+          <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Create Purchase Order</h5>
@@ -381,11 +382,11 @@ const PurchaseOrdersPage = () => {
               <form onSubmit={handleSubmit}>
                 <div className="modal-body">
                   <div className="row g-3 mb-3">
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">PO Number</label>
                       <input type="text" className="form-control bg-light" readOnly value="Auto-generated" />
                     </div>
-                    <div className="col-md-3" ref={projectComboboxRef}>
+                    <div className="col-12 col-sm-6 col-md-3" ref={projectComboboxRef}>
                       <label className="form-label fw-semibold">Project *</label>
                       <div className="position-relative">
                         <input
@@ -419,34 +420,34 @@ const PurchaseOrdersPage = () => {
                         )}
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Material Request *</label>
                       <select className="form-select" required value={form.material_request} onChange={e => handleMRChange(e.target.value)}>
                         <option value="">Select MR</option>
                         {materialRequests.map(mr => <option key={mr.id} value={mr.id}>{mr.request_number}</option>)}
                       </select>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Vendor *</label>
                       <input type="text" className="form-control" required value={form.vendor} onChange={handleVendorChange} />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Vendor Mobile *</label>
                       <input type="tel" className="form-control" required pattern="[0-9]{10}" title="10-digit mobile number" value={form.vendor_mobile} onChange={e => setForm(f => ({ ...f, vendor_mobile: e.target.value }))} />
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-12 col-md-9">
                       <label className="form-label fw-semibold">Vendor Location Details *</label>
                       <input type="text" className="form-control" required value={form.vendor_location} onChange={e => setForm(f => ({ ...f, vendor_location: e.target.value }))} />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Order Date *</label>
                       <input type="date" className="form-control" required value={form.order_date} onChange={e => setForm(f => ({ ...f, order_date: e.target.value }))} />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Expected Delivery</label>
                       <input type="date" className="form-control" value={form.expected_delivery_date} onChange={e => setForm(f => ({ ...f, expected_delivery_date: e.target.value }))} />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Tax %</label>
                       <input type="number" className="form-control" min="0" step="0.01" value={form.tax_percentage} onChange={e => setForm(f => ({ ...f, tax_percentage: e.target.value }))} />
                     </div>
@@ -456,27 +457,27 @@ const PurchaseOrdersPage = () => {
                   <h6 className="fw-bold mb-2">Items</h6>
                   {poItems.map((item, idx) => (
                     <div key={idx} className="row g-2 mb-2 align-items-end border-bottom pb-2">
-                      <div className="col-md-4">
+                      <div className="col-12 col-sm-6 col-md-4">
                         <label className="form-label fw-semibold small">Material *</label>
                         <select className="form-select form-select-sm" required value={item.material} onChange={e => updatePoItem(idx, 'material', e.target.value)}>
                           <option value="">Select Material</option>
                           {materials.map(m => <option key={m.id} value={m.id}>{m.material_name} ({m.unit})</option>)}
                         </select>
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-6 col-sm-3 col-md-2">
                         <label className="form-label fw-semibold small">Quantity *</label>
                         <input type="number" className="form-control form-control-sm" required min="0.01" step="0.01" value={item.quantity} onChange={e => updatePoItem(idx, 'quantity', e.target.value)} />
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-6 col-sm-3 col-md-2">
                         <label className="form-label fw-semibold small">Rate (₹) *</label>
                         <input type="number" className="form-control form-control-sm" required min="0" step="0.01" value={item.unit_price} onChange={e => updatePoItem(idx, 'unit_price', e.target.value)} />
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-10 col-sm-10 col-md-3">
                         <label className="form-label fw-semibold small">Line Total</label>
                         <input className="form-control form-control-sm bg-light" readOnly value={`₹${(Number(item.quantity) * Number(item.unit_price) || 0).toLocaleString('en-IN')}`} />
                       </div>
-                      <div className="col-md-1">
-                        {poItems.length > 1 && <button type="button" className="btn btn-sm btn-light text-danger" onClick={() => setPoItems(p => p.filter((_, i) => i !== idx))}>✕</button>}
+                      <div className="col-2 col-sm-2 col-md-1 text-end">
+                        {poItems.length > 1 && <button type="button" className="btn btn-sm btn-light text-danger w-100" onClick={() => setPoItems(p => p.filter((_, i) => i !== idx))}>✕</button>}
                       </div>
                     </div>
                   ))}
@@ -504,7 +505,7 @@ const PurchaseOrdersPage = () => {
 
       {showDetailsModal && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-lg">
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Purchase Order Details</h5>
@@ -518,10 +519,10 @@ const PurchaseOrdersPage = () => {
                     <div className="mb-4">
                       <h6 className="fw-bold mb-3 border-bottom pb-2">PO Information</h6>
                       <div className="row g-3">
-                        <div className="col-md-3"><span className="text-muted d-block small">PO Number</span><span className="fw-semibold">{selectedPo.po_number}</span></div>
-                        <div className="col-md-3"><span className="text-muted d-block small">Project</span><span className="fw-semibold">{selectedPo.project_name}</span></div>
-                        <div className="col-md-3"><span className="text-muted d-block small">PO Date</span><span className="fw-semibold">{selectedPo.order_date}</span></div>
-                        <div className="col-md-3"><span className="text-muted d-block small">Status</span><StatusBadge status={selectedPo.status} /></div>
+                        <div className="col-6 col-md-3"><span className="text-muted d-block small">PO Number</span><span className="fw-semibold">{selectedPo.po_number}</span></div>
+                        <div className="col-6 col-md-3"><span className="text-muted d-block small">Project</span><span className="fw-semibold">{selectedPo.project_name}</span></div>
+                        <div className="col-6 col-md-3"><span className="text-muted d-block small">PO Date</span><span className="fw-semibold">{selectedPo.order_date}</span></div>
+                        <div className="col-6 col-md-3"><span className="text-muted d-block small">Status</span><StatusBadge status={selectedPo.status} /></div>
                       </div>
                     </div>
 
@@ -558,9 +559,9 @@ const PurchaseOrdersPage = () => {
                     <div>
                       <h6 className="fw-bold mb-3 border-bottom pb-2">Vendor Details</h6>
                       <div className="row g-3">
-                        <div className="col-md-4"><span className="text-muted d-block small">Vendor Name</span><span className="fw-semibold">{selectedPo.vendor || '—'}</span></div>
-                        <div className="col-md-4"><span className="text-muted d-block small">Mobile Number</span><span className="fw-semibold">{selectedPo.vendor_mobile || '—'}</span></div>
-                        <div className="col-md-4"><span className="text-muted d-block small">Location</span><span className="fw-semibold">{selectedPo.vendor_location || '—'}</span></div>
+                        <div className="col-12 col-md-4"><span className="text-muted d-block small">Vendor Name</span><span className="fw-semibold">{selectedPo.vendor || '—'}</span></div>
+                        <div className="col-12 col-md-4"><span className="text-muted d-block small">Mobile Number</span><span className="fw-semibold">{selectedPo.vendor_mobile || '—'}</span></div>
+                        <div className="col-12 col-md-4"><span className="text-muted d-block small">Location</span><span className="fw-semibold">{selectedPo.vendor_location || '—'}</span></div>
                       </div>
                     </div>
                   </>

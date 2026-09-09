@@ -112,7 +112,7 @@ const WorkCenter = () => {
   return (
     <div className="container-fluid px-0">
       {/* Header and Filter */}
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3 mb-4">
         <div>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb mb-1 text-muted" style={{ fontSize: '0.85rem' }}>
@@ -124,13 +124,13 @@ const WorkCenter = () => {
           <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>Today's project activities and actions requiring your attention</p>
         </div>
         
-        <div className="d-flex align-items-center gap-2">
-          <div className="input-group" style={{ minWidth: '220px' }}>
+        <div className="d-flex align-items-center gap-2 w-100 w-md-auto">
+          <div className="input-group flex-grow-1 flex-md-grow-0" style={{ minWidth: '200px' }}>
             <label className="input-group-text bg-white border-end-0 text-muted" htmlFor="project-filter" style={{ fontSize: '0.85rem' }}>
               Project
             </label>
             <select 
-              className="form-select border-start-0 fw-medium" 
+              className="form-select border-start-0 fw-medium shadow-none" 
               id="project-filter"
               value={selectedProject} 
               onChange={handleProjectChange}
@@ -143,7 +143,7 @@ const WorkCenter = () => {
             </select>
           </div>
           <button 
-            className="btn btn-light bg-white border shadow-sm d-flex align-items-center justify-content-center p-2 rounded-3"
+            className="btn btn-light bg-white border shadow-sm d-flex align-items-center justify-content-center p-2 rounded-3 flex-shrink-0"
             onClick={handleRefresh}
             disabled={refreshing}
             title="Refresh Data"
@@ -155,8 +155,8 @@ const WorkCenter = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="row g-4 mb-4">
-        <div className="col-md-6 col-lg-3">
+      <div className="row g-3 g-md-4 mb-4">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard 
             title="Active Projects" 
             value={overview.active_projects} 
@@ -164,7 +164,7 @@ const WorkCenter = () => {
             color="primary" 
           />
         </div>
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard 
             title="Pending Approvals" 
             value={overview.pending_approvals} 
@@ -172,7 +172,7 @@ const WorkCenter = () => {
             color="warning" 
           />
         </div>
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard 
             title="Stock Alerts" 
             value={overview.stock_alerts} 
@@ -180,7 +180,7 @@ const WorkCenter = () => {
             color="danger" 
           />
         </div>
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard 
             title="Open Work Orders" 
             value={overview.open_work_orders} 
@@ -198,7 +198,7 @@ const WorkCenter = () => {
         </div>
         <div className="row g-3">
           {actions.map((act, index) => (
-            <div key={index} className="col-12 col-md-6 col-lg-2-4">
+            <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-2-4">
               <div 
                 className="card h-100 border-0 shadow-sm erp-action-card" 
                 onClick={() => navigate(act.route, { state: { fromWorkCenter: true } })}
@@ -287,13 +287,13 @@ const WorkCenter = () => {
                     </table>
                   </div>
                   {totalPages > 1 && (
-                    <div className="d-flex justify-content-between align-items-center pt-3 mt-2 border-top">
+                    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 pt-3 mt-2 border-top">
                       <span className="text-muted small">Showing page {validCurrentPage} of {totalPages}</span>
                       <nav>
                         <ul className="pagination pagination-sm mb-0">
                           <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
                             <button 
-                              className="page-link" 
+                              className="page-link shadow-none" 
                               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                               disabled={validCurrentPage === 1}
                             >
@@ -302,14 +302,14 @@ const WorkCenter = () => {
                           </li>
                           {[...Array(totalPages)].map((_, idx) => (
                             <li key={idx} className={`page-item ${validCurrentPage === idx + 1 ? 'active' : ''}`}>
-                              <button className="page-link" onClick={() => setCurrentPage(idx + 1)}>
+                              <button className="page-link shadow-none" onClick={() => setCurrentPage(idx + 1)}>
                                 {idx + 1}
                               </button>
                             </li>
                           ))}
                           <li className={`page-item ${validCurrentPage === totalPages ? 'disabled' : ''}`}>
                             <button 
-                              className="page-link" 
+                              className="page-link shadow-none" 
                               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                               disabled={validCurrentPage === totalPages}
                             >

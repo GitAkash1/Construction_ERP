@@ -250,20 +250,20 @@ const Projects = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center mt-4 mb-2 px-1">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 mt-4 mb-2 px-3 py-2">
         <span className="text-muted small fw-medium">Showing page {currentPage} of {totalPages}</span>
         <nav>
           <ul className="pagination pagination-sm mb-0 shadow-sm">
             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <button className="page-link rounded-start-3" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
+              <button className="page-link rounded-start-3 shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
             {[...Array(totalPages)].map((_, idx) => (
               <li key={idx} className={`page-item ${currentPage === idx + 1 ? 'active' : ''}`}>
-                <button className="page-link" onClick={() => setCurrentPage(idx + 1)}>{idx + 1}</button>
+                <button className="page-link shadow-none" onClick={() => setCurrentPage(idx + 1)}>{idx + 1}</button>
               </li>
             ))}
             <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-              <button className="page-link rounded-end-3" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
+              <button className="page-link rounded-end-3 shadow-none" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
             </li>
           </ul>
         </nav>
@@ -273,9 +273,9 @@ const Projects = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-3 mb-4">
         <h2 className="fw-bold mb-0 text-dark">Projects</h2>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <BackToWorkCenter />
           {hasPermission('projects.create') && (
             <button className="btn btn-primary shadow-sm rounded-3 d-flex align-items-center gap-2" onClick={() => setShowModal(true)}>
@@ -287,7 +287,7 @@ const Projects = () => {
 
       {/* Filter Bar */}
       <div className="card border-0 shadow-sm rounded-4 mb-4 bg-white">
-        <div className="card-body p-4">
+        <div className="card-body p-3 p-md-4">
           <div className="d-flex align-items-center mb-3">
             <FiFilter className="text-primary me-2" />
             <h6 className="mb-0 fw-bold text-dark">Search & Filter</h6>
@@ -300,7 +300,7 @@ const Projects = () => {
           
           <div className="row g-3">
             {/* Project Search (Hybrid) */}
-            <div className="col-md-4 position-relative">
+            <div className="col-12 col-md-4 position-relative">
               <label className="form-label small text-muted fw-semibold">Project Name</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0 rounded-start-3">
@@ -308,7 +308,7 @@ const Projects = () => {
                 </span>
                 <input 
                   type="text"
-                  className="form-control bg-light border-start-0 ps-0 rounded-end-3"
+                  className="form-control bg-light border-start-0 ps-0 rounded-end-3 shadow-none"
                   placeholder="Type to search..."
                   value={searchTerm}
                   onChange={(e) => updateFilter(setSearchTerm, e.target.value)}
@@ -340,9 +340,9 @@ const Projects = () => {
             </div>
 
             {/* Status Filter */}
-            <div className="col-md-2">
+            <div className="col-6 col-md-2">
               <label className="form-label small text-muted fw-semibold">Status</label>
-              <select className="form-select bg-light rounded-3 border-light" value={statusFilter} onChange={(e) => updateFilter(setStatusFilter, e.target.value)}>
+              <select className="form-select bg-light rounded-3 border-light shadow-none" value={statusFilter} onChange={(e) => updateFilter(setStatusFilter, e.target.value)}>
                 <option value="">All</option>
                 <option value="Planned">Planned</option>
                 <option value="Active">Active</option>
@@ -353,9 +353,9 @@ const Projects = () => {
             </div>
 
             {/* Location Filter */}
-            <div className="col-md-2">
+            <div className="col-6 col-md-2">
               <label className="form-label small text-muted fw-semibold">Location</label>
-              <select className="form-select bg-light rounded-3 border-light" value={locationFilter} onChange={(e) => updateFilter(setLocationFilter, e.target.value)}>
+              <select className="form-select bg-light rounded-3 border-light shadow-none" value={locationFilter} onChange={(e) => updateFilter(setLocationFilter, e.target.value)}>
                 <option value="">All</option>
                 {locations.map((loc, idx) => (
                   <option key={idx} value={loc}>{loc}</option>
@@ -364,19 +364,19 @@ const Projects = () => {
             </div>
 
             {/* Contract Value Filter */}
-            <div className="col-md-4">
+            <div className="col-12 col-md-4">
               <label className="form-label small text-muted fw-semibold">Contract Value (Min - Max)</label>
               <div className="d-flex gap-2">
                 <input 
                   type="number" 
-                  className="form-control bg-light rounded-3 border-light w-50" 
+                  className="form-control bg-light rounded-3 border-light w-50 shadow-none" 
                   placeholder="Min Value"
                   value={minContractValue}
                   onChange={(e) => updateFilter(setMinContractValue, e.target.value)}
                 />
                 <input 
                   type="number" 
-                  className="form-control bg-light rounded-3 border-light w-50" 
+                  className="form-control bg-light rounded-3 border-light w-50 shadow-none" 
                   placeholder="Max Value"
                   value={maxContractValue}
                   onChange={(e) => updateFilter(setMaxContractValue, e.target.value)}
@@ -387,7 +387,7 @@ const Projects = () => {
         </div>
       </div>
 
-      <div className="shadow-sm rounded-4 overflow-hidden bg-white">
+      <div className="shadow-sm rounded-4 overflow-hidden bg-white mb-4">
         {/* Note: we omit onSearch in DataTable since we handle it externally */}
         <DataTable 
           columns={columns} 
@@ -399,7 +399,7 @@ const Projects = () => {
       
       {showModal && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055, backdropFilter: 'blur(4px)' }}>
-          <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content border-0 shadow-lg rounded-4">
               <div className="modal-header border-bottom-0 pt-4 px-4">
                 <h5 className="modal-title fw-bold text-dark">{isEditing ? 'Edit Project' : 'Create New Project'}</h5>
@@ -408,19 +408,19 @@ const Projects = () => {
               <form onSubmit={handleCreateSubmit}>
                 <div className="modal-body px-4">
                   <div className="row g-3">
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-secondary small text-uppercase tracking-wider">Project Code *</label>
                       <input type="text" className="form-control bg-light rounded-3 border-light" disabled value={isEditing ? form.project_code : 'Auto-generated upon save'} />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Project Name *</label>
                       <input type="text" className="form-control bg-light rounded-3 border-light" required value={form.project_name} onChange={e => setForm({...form, project_name: e.target.value})} placeholder="Project Name" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Client Name *</label>
                       <input type="text" className="form-control bg-light rounded-3 border-light" required value={form.client_name} onChange={e => setForm({...form, client_name: e.target.value})} placeholder="Client Name" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Client Mobile Number *</label>
                       <input 
                         type="tel" 
@@ -434,23 +434,23 @@ const Projects = () => {
                         placeholder="Client Mobile Number" 
                       />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Location *</label>
                       <input type="text" className="form-control bg-light rounded-3 border-light" required value={form.project_location} onChange={e => setForm({...form, project_location: e.target.value})} placeholder="Project Location" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Start Date *</label>
                       <input type="date" className="form-control bg-light rounded-3 border-light" required value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Expected End Date *</label>
                       <input type="date" className="form-control bg-light rounded-3 border-light" required value={form.expected_end_date} onChange={e => setForm({...form, expected_end_date: e.target.value})} />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Contract Value (₹) *</label>
                       <input type="number" className="form-control bg-light rounded-3 border-light" required min="0" step="0.01" value={form.estimated_budget} onChange={e => setForm({...form, estimated_budget: e.target.value})} />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold text-muted small">Status *</label>
                       <select className="form-select bg-light rounded-3 border-light" required value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
                         <option value="Planned">Planned</option>
@@ -466,7 +466,7 @@ const Projects = () => {
                     </div>
                   </div>
                 </div>
-                <div className="modal-footer border-top-0 pb-4 px-4">
+                <div className="modal-footer border-top-0 pb-4 px-4 flex-wrap gap-2">
                   <button type="button" className="btn btn-light rounded-3 shadow-sm px-4" onClick={handleModalClose}>Cancel</button>
                   <button type="submit" className="btn btn-primary rounded-3 shadow-sm px-4" disabled={saving}>
                     {saving ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Save Changes' : 'Create Project')}
@@ -481,7 +481,7 @@ const Projects = () => {
       {/* Read-Only Project Details Modal */}
       {showViewModal && selectedProject && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055, backdropFilter: 'blur(4px)' }} onClick={handleViewModalClose}>
-          <div className="modal-dialog modal-lg modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" onClick={(e) => e.stopPropagation()}>
             <div className="modal-content border-0 shadow-lg rounded-4">
               <div className="modal-header border-bottom-0 pt-4 px-4">
                 <h5 className="modal-title fw-bold text-dark">Project Details</h5>

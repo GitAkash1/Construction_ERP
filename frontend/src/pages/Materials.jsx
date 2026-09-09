@@ -121,10 +121,10 @@ const Materials = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white">
-        <span className="text-muted small fw-medium">Showing page {validCurrentPage} of {totalPages}</span>
-        <nav>
-          <ul className="pagination pagination-sm mb-0 shadow-sm">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+        <span className="text-muted small fw-medium text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 shadow-sm flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button 
                 type="button"
@@ -164,11 +164,11 @@ const Materials = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <h2 className="fw-bold mb-0">Material Requests Approval</h2>
-        <div className="d-flex align-items-center gap-3 flex-wrap">
+        <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 gap-sm-3 flex-wrap w-100 w-md-auto">
           {/* Project Search Combobox */}
-          <div style={{ width: '260px', position: 'relative' }} ref={comboboxRef}>
+          <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={comboboxRef}>
             <input
               type="text"
               className="form-control"
@@ -200,7 +200,7 @@ const Materials = () => {
           </div>
 
           {/* Date Filter Input */}
-          <div className="input-group" style={{ maxWidth: '220px' }}>
+          <div className="input-group flex-grow-1 flex-sm-grow-0" style={{ minWidth: '180px' }}>
             <span className="input-group-text bg-white">
               <FiCalendar className="text-muted" />
             </span>
@@ -221,7 +221,7 @@ const Materials = () => {
           {(selectedProject || projectSearchText || selectedDate) && (
             <button 
               type="button"
-              className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center gap-1"
+              className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center justify-content-center gap-1"
               onClick={() => {
                 setSelectedProject('');
                 setProjectSearchText('');
@@ -311,7 +311,7 @@ const Materials = () => {
 
       {selectedRequest && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-lg">
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Request Details: {selectedRequest.request_number}</h5>

@@ -36,11 +36,16 @@ const SubcontractWorkOrders = () => {
   const [selectedTableProject, setSelectedTableProject] = useState(null);
   const tableProjectComboboxRef = useRef(null);
   const [statusFilter, setStatusFilter] = useState('');
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const statusDropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (tableProjectComboboxRef.current && !tableProjectComboboxRef.current.contains(event.target)) {
         setShowTableProjectDropdown(false);
+      }
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target)) {
+        setShowStatusDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -209,7 +214,7 @@ const SubcontractWorkOrders = () => {
   const paginatedWorkOrders = filteredWorkOrders.slice(startIndex, startIndex + pageSize);
 
   const dropdownProjects = projects.filter(p => p.project_name?.toLowerCase().includes(tableProjectSearch.toLowerCase()));
-  const uniqueStatuses = Array.from(new Set(workOrders.map(w => w.status).filter(Boolean)));
+  const uniqueStatuses = Array.from(new Set(['Draft', 'In Progress', 'Completed', 'Issued', 'Cancelled', ...workOrders.map(w => w.status).filter(Boolean)]));
 
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
@@ -303,23 +308,23 @@ const SubcontractWorkOrders = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <div>
           <h2 className="fw-bold mb-0">Subcontract Work Orders</h2>
           <p className="text-muted mb-0">Manage subcontractor agreements and work scope</p>
         </div>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <BackToWorkCenter />
           {hasPermission('work_orders.create') && (
-            <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handleOpenModal}>
+            <button className="btn btn-primary d-flex align-items-center justify-content-center gap-2" onClick={handleOpenModal}>
               <FiPlus /> Create Work Order
             </button>
           )}
         </div>
       </div>
 
-      <div className="d-flex align-items-center gap-3 mb-4">
-        <div style={{ width: '300px', position: 'relative' }} ref={tableProjectComboboxRef}>
+      <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 gap-sm-3 mb-4 flex-wrap">
+        <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={tableProjectComboboxRef}>
           <input
             type="text"
             className="form-control"
@@ -358,18 +363,59 @@ const SubcontractWorkOrders = () => {
           )}
         </div>
 
-        <div className="d-flex align-items-center">
-          <select 
-            className="form-select"
-            value={statusFilter}
-            onChange={handleStatusFilterChange}
-            style={{ width: '200px' }}
+        {/* All Status Dropdown with Mobile Viewport Containment */}
+        <div className="work-order-status-wrapper position-relative flex-grow-1 flex-sm-grow-0" style={{ minWidth: '180px' }} ref={statusDropdownRef}>
+          <button
+            type="button"
+            className="form-select text-start d-flex justify-content-between align-items-center shadow-none w-100 work-order-status-select"
+            onClick={() => setShowStatusDropdown(prev => !prev)}
+            aria-expanded={showStatusDropdown}
           >
-            <option value="">All Status</option>
-            {uniqueStatuses.map(status => (
-              <option key={status} value={status}>{status}</option>
-            ))}
-          </select>
+            <span className={`text-truncate ${!statusFilter ? 'text-muted' : 'text-dark fw-medium'}`}>
+              {statusFilter || 'All Status'}
+            </span>
+          </button>
+
+          {showStatusDropdown && (
+            <div 
+              className="work-order-status-dropdown position-absolute shadow-sm border rounded bg-white mt-1 py-1"
+              style={{
+                zIndex: 1050,
+                maxHeight: '220px',
+                overflowY: 'auto',
+                left: 0,
+                right: 0,
+                boxSizing: 'border-box'
+              }}
+            >
+              <button
+                type="button"
+                className={`dropdown-item py-2 px-3 ${!statusFilter ? 'active fw-semibold' : ''}`}
+                onClick={() => {
+                  setStatusFilter('');
+                  setCurrentPage(1);
+                  setShowStatusDropdown(false);
+                }}
+              >
+                All Status
+              </button>
+              {uniqueStatuses.map(status => (
+                <button
+                  key={status}
+                  type="button"
+                  className={`dropdown-item py-2 px-3 text-wrap ${statusFilter === status ? 'active fw-semibold' : ''}`}
+                  style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
+                  onClick={() => {
+                    setStatusFilter(status);
+                    setCurrentPage(1);
+                    setShowStatusDropdown(false);
+                  }}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -418,24 +464,24 @@ const SubcontractWorkOrders = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-lg">
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Create Work Order</h5>
+                <h5 className="modal-title fw-bold">Create Work Order</h5>
                 <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="modal-body">
                   <div className="row g-3">
-                    <div className="col-md-6">
+                    <div className="col-12 col-sm-6">
                       <label className="form-label">Project *</label>
                       <select className="form-select" name="project" value={form.project} onChange={handleInputChange} required>
                         <option value="">Select Project</option>
                         {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
                       </select>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-sm-6">
                       <label className="form-label">Subcontractor *</label>
                       <select className="form-select" name="subcontractor" value={form.subcontractor} onChange={handleInputChange} required>
                         <option value="">Select Subcontractor</option>
@@ -465,7 +511,7 @@ const SubcontractWorkOrders = () => {
                       <label className="form-label">Work Description *</label>
                       <textarea className="form-control" name="work_description" rows="2" value={form.work_description} onChange={handleInputChange} required></textarea>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-sm-4">
                       <label className="form-label">Contract Quantity *</label>
                       <input 
                         type="number" 
@@ -488,19 +534,19 @@ const SubcontractWorkOrders = () => {
                         </div>
                       )}
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-6 col-sm-4">
                       <label className="form-label">Unit *</label>
                       <input type="text" className="form-control" name="unit" value={form.unit} onChange={handleInputChange} required />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-6 col-sm-4">
                       <label className="form-label">Rate (₹) *</label>
                       <input type="number" step="0.01" className="form-control" name="rate" value={form.rate} onChange={handleInputChange} required min="0" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-sm-6">
                       <label className="form-label">Work Area</label>
                       <input type="text" className="form-control" name="work_area" value={form.work_area} onChange={handleInputChange} placeholder="e.g. Ground Floor" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-sm-6">
                       <label className="form-label">Planned Completion</label>
                       <input type="date" className="form-control" name="planned_completion_date" value={form.planned_completion_date} onChange={handleInputChange} />
                     </div>

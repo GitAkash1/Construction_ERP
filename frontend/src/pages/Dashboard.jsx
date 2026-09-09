@@ -43,27 +43,27 @@ const Dashboard = () => {
     <div>
       <h2 className="mb-4 fw-bold">Overview</h2>
       
-      <div className="row g-4 mb-4">
-        <div className="col-md-6 col-lg-3">
+      <div className="row g-3 g-md-4 mb-4">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard title="Total Projects" value={stats.total_projects} icon={FiBriefcase} color="primary" />
         </div>
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard title="Active Projects" value={stats.active_projects} icon={FiCheckCircle} color="success" />
         </div>
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard title="Delayed Projects" value={stats.delayed_projects} icon={FiAlertCircle} color="danger" />
         </div>
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard title="Active Sites" value={stats.active_sites} icon={FiMap} color="info" />
         </div>
         
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard title="Pending Tasks" value={stats.pending_tasks} icon={FiClock} color="warning" />
         </div>
-        <div className="col-md-6 col-lg-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <StatCard title="Low Stock Materials" value={stats.low_stock_materials} icon={FiAlertTriangle} color="danger" />
         </div>
-        <div className="col-md-6 col-lg-6">
+        <div className="col-12 col-lg-6">
           <StatCard 
             title="Total Project Cost" 
             value={`₹${Number(stats.total_project_cost).toLocaleString('en-IN', {minimumFractionDigits: 0, maximumFractionDigits: 2})}`} 

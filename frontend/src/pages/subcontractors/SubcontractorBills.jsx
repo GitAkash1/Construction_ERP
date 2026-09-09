@@ -19,12 +19,17 @@ const SubcontractorBills = () => {
   const [selectedTableProject, setSelectedTableProject] = useState(null);
   const tableProjectComboboxRef = useRef(null);
   const [statusFilter, setStatusFilter] = useState('');
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const statusDropdownRef = useRef(null);
   const [tableDateFilter, setTableDateFilter] = useState('');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (tableProjectComboboxRef.current && !tableProjectComboboxRef.current.contains(event.target)) {
         setShowTableProjectDropdown(false);
+      }
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target)) {
+        setShowStatusDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -100,9 +105,10 @@ const SubcontractorBills = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-end p-3 border-top bg-white">
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+        <span className="text-muted small text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button type="button" className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
@@ -177,19 +183,19 @@ const SubcontractorBills = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <div>
           <h2 className="fw-bold mb-0">Subcontractor Bills</h2>
           <p className="text-muted mb-0">Manage and approve subcontractor billing</p>
         </div>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 w-100 w-sm-auto justify-content-start justify-content-sm-end">
           <BackToWorkCenter />
         </div>
       </div>
 
-      <div className="d-flex align-items-center gap-3 mb-4">
+      <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 gap-sm-3 mb-4 flex-wrap">
         {/* Project Combobox */}
-        <div style={{ width: '300px', position: 'relative' }} ref={tableProjectComboboxRef}>
+        <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={tableProjectComboboxRef}>
           <input
             type="text"
             className="form-control"
@@ -245,13 +251,13 @@ const SubcontractorBills = () => {
         </div>
 
         {/* Date Filter */}
-        <div className="d-flex align-items-center gap-1">
+        <div className="d-flex align-items-center gap-1 flex-grow-1 flex-sm-grow-0">
           <input
             type="date"
             className="form-control"
             value={tableDateFilter}
             onChange={(e) => { setTableDateFilter(e.target.value); setCurrentPage(1); }}
-            style={{ width: '150px' }}
+            style={{ minWidth: '140px' }}
             title="Filter by Date"
           />
           {tableDateFilter && (
@@ -265,19 +271,59 @@ const SubcontractorBills = () => {
           )}
         </div>
 
-        {/* Status Filter */}
-        <div className="d-flex align-items-center">
-          <select 
-            className="form-select"
-            value={statusFilter}
-            onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
-            style={{ width: '200px' }}
+        {/* Status Filter Dropdown with Mobile Viewport Containment */}
+        <div className="work-order-status-wrapper position-relative flex-grow-1 flex-sm-grow-0" style={{ minWidth: '160px' }} ref={statusDropdownRef}>
+          <button
+            type="button"
+            className="form-select text-start d-flex justify-content-between align-items-center shadow-none w-100 work-order-status-select"
+            onClick={() => setShowStatusDropdown(prev => !prev)}
+            aria-expanded={showStatusDropdown}
           >
-            <option value="">All Status</option>
-            {uniqueStatuses.map(status => (
-              <option key={status} value={status}>{status}</option>
-            ))}
-          </select>
+            <span className={`text-truncate ${!statusFilter ? 'text-muted' : 'text-dark fw-medium'}`}>
+              {statusFilter || 'All Status'}
+            </span>
+          </button>
+
+          {showStatusDropdown && (
+            <div 
+              className="work-order-status-dropdown position-absolute shadow-sm border rounded bg-white mt-1 py-1"
+              style={{
+                zIndex: 1050,
+                maxHeight: '220px',
+                overflowY: 'auto',
+                left: 0,
+                right: 0,
+                boxSizing: 'border-box'
+              }}
+            >
+              <button
+                type="button"
+                className={`dropdown-item py-2 px-3 ${!statusFilter ? 'active fw-semibold' : ''}`}
+                onClick={() => {
+                  setStatusFilter('');
+                  setCurrentPage(1);
+                  setShowStatusDropdown(false);
+                }}
+              >
+                All Status
+              </button>
+              {uniqueStatuses.map(status => (
+                <button
+                  key={status}
+                  type="button"
+                  className={`dropdown-item py-2 px-3 text-wrap ${statusFilter === status ? 'active fw-semibold' : ''}`}
+                  style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
+                  onClick={() => {
+                    setStatusFilter(status);
+                    setCurrentPage(1);
+                    setShowStatusDropdown(false);
+                  }}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

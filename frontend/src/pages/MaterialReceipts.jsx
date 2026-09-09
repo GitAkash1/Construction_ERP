@@ -226,10 +226,10 @@ const MaterialReceipts = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white">
-        <span className="text-muted small">Showing page {validCurrentPage} of {totalPages}</span>
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+        <span className="text-muted small text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button type="button" className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
@@ -249,75 +249,76 @@ const MaterialReceipts = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <h2 className="fw-bold mb-0">Material Receipts (GRN)</h2>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <BackToWorkCenter />
-
-          <div style={{ width: '250px', position: 'relative' }} ref={tableProjectComboboxRef}>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by Project Name..."
-              value={tableProjectSearch}
-              onChange={handleTableProjectSearchChange}
-              onFocus={() => setShowTableProjectDropdown(true)}
-            />
-            {tableProjectSearch && (
-              <button
-                className="btn btn-sm btn-link text-muted position-absolute end-0 top-50 translate-middle-y me-1 text-decoration-none"
-                onClick={clearTableProjectFilter}
-                style={{ zIndex: 10, padding: 0 }}
-                title="Clear Project"
-              >
-                ✕
-              </button>
-            )}
-            {showTableProjectDropdown && (
-              <ul className="list-group position-absolute w-100 shadow-sm" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
-                {projects.filter(p => p.project_name.toLowerCase().includes(tableProjectSearch.toLowerCase())).length > 0 ? (
-                  projects
-                    .filter(p => p.project_name.toLowerCase().includes(tableProjectSearch.toLowerCase()))
-                    .map(p => (
-                      <li
-                        key={p.id}
-                        className="list-group-item list-group-item-action"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleSelectTableProject(p)}
-                      >
-                        {p.project_name}
-                      </li>
-                    ))
-                ) : (
-                  <li className="list-group-item text-muted">No projects found</li>
-                )}
-              </ul>
-            )}
-          </div>
-
-          <div className="d-flex align-items-center gap-1">
-            <input
-              type="date"
-              className="form-control"
-              value={tableDateFilter}
-              onChange={handleTableDateChange}
-              style={{ width: '150px' }}
-              title="Filter by Date"
-            />
-            {tableDateFilter && (
-              <button
-                className="btn btn-outline-secondary"
-                onClick={clearTableDateFilter}
-                title="Clear Date Filter"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
           {hasPermission('material_receipts.create') && (
-            <button className="btn btn-primary d-flex align-items-center gap-2" onClick={() => setShowModal(true)}>
+            <button className="btn btn-primary d-flex align-items-center justify-content-center gap-2" onClick={() => setShowModal(true)}>
               <FiPlus /> Record Receipt
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 mb-4 flex-wrap">
+        <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={tableProjectComboboxRef}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by Project Name..."
+            value={tableProjectSearch}
+            onChange={handleTableProjectSearchChange}
+            onFocus={() => setShowTableProjectDropdown(true)}
+          />
+          {tableProjectSearch && (
+            <button
+              className="btn btn-sm btn-link text-muted position-absolute end-0 top-50 translate-middle-y me-1 text-decoration-none"
+              onClick={clearTableProjectFilter}
+              style={{ zIndex: 10, padding: 0 }}
+              title="Clear Project"
+            >
+              ✕
+            </button>
+          )}
+          {showTableProjectDropdown && (
+            <ul className="list-group position-absolute w-100 shadow-sm" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
+              {projects.filter(p => p.project_name.toLowerCase().includes(tableProjectSearch.toLowerCase())).length > 0 ? (
+                projects
+                  .filter(p => p.project_name.toLowerCase().includes(tableProjectSearch.toLowerCase()))
+                  .map(p => (
+                    <li
+                      key={p.id}
+                      className="list-group-item list-group-item-action"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleSelectTableProject(p)}
+                    >
+                      {p.project_name}
+                    </li>
+                  ))
+              ) : (
+                <li className="list-group-item text-muted">No projects found</li>
+              )}
+            </ul>
+          )}
+        </div>
+
+        <div className="d-flex align-items-center gap-1 flex-grow-1 flex-sm-grow-0">
+          <input
+            type="date"
+            className="form-control"
+            value={tableDateFilter}
+            onChange={handleTableDateChange}
+            style={{ minWidth: '140px' }}
+            title="Filter by Date"
+          />
+          {tableDateFilter && (
+            <button
+              className="btn btn-outline-secondary"
+              onClick={clearTableDateFilter}
+              title="Clear Date Filter"
+            >
+              Clear
             </button>
           )}
         </div>
@@ -374,7 +375,7 @@ const MaterialReceipts = () => {
 
       {showModal && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-xl">
+          <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Record Material Receipt</h5>
@@ -383,7 +384,7 @@ const MaterialReceipts = () => {
               <form onSubmit={handleSubmit}>
                 <div className="modal-body">
                   <div className="row g-3 mb-3">
-                    <div className="col-md-4" ref={projectComboboxRef}>
+                    <div className="col-12 col-sm-6 col-md-4" ref={projectComboboxRef}>
                       <label className="form-label fw-semibold">Project *</label>
                       <div className="position-relative">
                         <input
@@ -417,26 +418,26 @@ const MaterialReceipts = () => {
                         )}
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-sm-6 col-md-4">
                       <label className="form-label fw-semibold">Purchase Order *</label>
                       <select className="form-select" required value={form.purchase_order} onChange={e => handlePOChange(e.target.value)}>
                         <option value="">Select PO</option>
                         {pos.map(po => <option key={po.id} value={po.id}>{po.po_number} — {po.vendor}</option>)}
                       </select>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-sm-6 col-md-4">
                       <label className="form-label fw-semibold">Location</label>
                       <input type="text" className="form-control bg-light" readOnly value={form.project ? (form.location_details || 'Location not available') : ''} placeholder="Auto-populated" />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-sm-6 col-md-4">
                       <label className="form-label fw-semibold">Supplier</label>
                       <input type="text" className="form-control" value={form.supplier} onChange={e => setForm(f => ({ ...f, supplier: e.target.value }))} />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-sm-6 col-md-4">
                       <label className="form-label fw-semibold">Receipt Date *</label>
                       <input type="date" className="form-control" required value={form.receipt_date} onChange={e => setForm(f => ({ ...f, receipt_date: e.target.value }))} />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-sm-6 col-md-4">
                       <label className="form-label fw-semibold">Remarks</label>
                       <input type="text" className="form-control" value={form.remarks} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))} />
                     </div>
@@ -506,7 +507,7 @@ const MaterialReceipts = () => {
 
       {viewModalOpen && viewGrn && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-lg">
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Material Receipt Details</h5>
@@ -515,23 +516,23 @@ const MaterialReceipts = () => {
               <div className="modal-body">
                 {/* Header Information Grid */}
                 <div className="row g-3 mb-4">
-                  <div className="col-md-4">
+                  <div className="col-6 col-md-4">
                     <label className="form-label text-muted small fw-semibold mb-1">Receipt Date</label>
                     <div className="fw-medium">{viewGrn.receipt_date}</div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-6 col-md-4">
                     <label className="form-label text-muted small fw-semibold mb-1">GRN ID</label>
                     <div className="fw-medium">GRN-{viewGrn.id}</div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-12 col-md-4">
                     <label className="form-label text-muted small fw-semibold mb-1">PO Number</label>
                     <div className="fw-semibold text-primary">{viewGrn.po_number}</div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-12 col-md-6">
                     <label className="form-label text-muted small fw-semibold mb-1">Project</label>
                     <div className="fw-medium">{viewGrn.project_name}</div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-12 col-md-6">
                     <label className="form-label text-muted small fw-semibold mb-1">Supplier</label>
                     <div className="fw-medium">{viewGrn.supplier || '—'}</div>
                   </div>

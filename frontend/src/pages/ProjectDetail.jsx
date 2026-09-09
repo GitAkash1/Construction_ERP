@@ -39,12 +39,12 @@ const ProjectDetail = () => {
 
   return (
     <div>
-      <div className="mb-4 d-flex align-items-center gap-3">
-        <Link to="/projects" className="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center text-muted">
+      <div className="mb-4 d-flex align-items-center gap-3 flex-wrap">
+        <Link to="/projects" className="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center text-muted flex-shrink-0" style={{ width: '40px', height: '40px' }}>
           <FiArrowLeft size={20} />
         </Link>
         <div>
-          <div className="d-flex align-items-center gap-3 mb-1">
+          <div className="d-flex align-items-center gap-3 mb-1 flex-wrap">
             <h2 className="fw-bold mb-0">{project.project_name}</h2>
             <StatusBadge status={project.status} />
           </div>
@@ -53,43 +53,43 @@ const ProjectDetail = () => {
       </div>
 
       <div className="card border-0 mb-4">
-        <div className="card-body p-4">
-          <div className="row g-4">
-            <div className="col-md-3">
-              <div className="d-flex align-items-center gap-3 text-muted mb-1">
+        <div className="card-body p-3 p-md-4">
+          <div className="row g-3 g-md-4">
+            <div className="col-6 col-md-3">
+              <div className="d-flex align-items-center gap-2 text-muted mb-1 small">
                 <FiMapPin /> Location
               </div>
               <div className="fw-medium text-dark">{project.project_location}</div>
             </div>
-            <div className="col-md-3">
-              <div className="d-flex align-items-center gap-3 text-muted mb-1">
+            <div className="col-6 col-md-3">
+              <div className="d-flex align-items-center gap-2 text-muted mb-1 small">
                 <FiCalendar /> Start Date
               </div>
               <div className="fw-medium text-dark">{project.start_date}</div>
             </div>
-            <div className="col-md-3">
-              <div className="d-flex align-items-center gap-3 text-muted mb-1">
+            <div className="col-6 col-md-3">
+              <div className="d-flex align-items-center gap-2 text-muted mb-1 small">
                 <FiCalendar /> Expected End
               </div>
               <div className="fw-medium text-dark">{project.expected_end_date}</div>
             </div>
-            <div className="col-md-3">
-              <div className="d-flex align-items-center gap-3 text-muted mb-1">
+            <div className="col-6 col-md-3">
+              <div className="d-flex align-items-center gap-2 text-muted mb-1 small">
                 <FiDollarSign /> Budget
               </div>
-              <div className="fw-medium text-dark">${Number(project.estimated_budget).toLocaleString()}</div>
+              <div className="fw-medium text-dark">₹{Number(project.estimated_budget).toLocaleString('en-IN')}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <ul className="nav nav-tabs border-bottom border-2 mb-4">
+      <ul className="nav nav-tabs border-bottom border-2 mb-4 flex-nowrap overflow-auto" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
         {['Overview', 'Engineering', 'Tasks', 'Sites', 'Procurement', 'Finance'].map(tab => (
-          <li className="nav-item" key={tab}>
+          <li className="nav-item flex-shrink-0" key={tab}>
             <button 
               className={`nav-link border-0 text-muted fw-medium pb-3 px-4 ${activeTab === tab.toLowerCase() ? 'active text-primary bg-transparent border-bottom border-primary border-3' : ''}`}
               onClick={() => setActiveTab(tab.toLowerCase())}
-              style={{ borderRadius: 0, marginBottom: '-2px' }}
+              style={{ borderRadius: 0, marginBottom: '-2px', whiteSpace: 'nowrap' }}
             >
               {tab}
             </button>

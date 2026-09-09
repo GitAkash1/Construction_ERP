@@ -190,20 +190,20 @@ const BOQList = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 p-3 border-top bg-white">
         <span className="text-muted small">Showing page {currentPage} of {totalPages}</span>
         <nav>
           <ul className="pagination pagination-sm mb-0">
             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
+              <button className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
             {[...Array(totalPages)].map((_, idx) => (
               <li key={idx} className={`page-item ${currentPage === idx + 1 ? 'active' : ''}`}>
-                <button className="page-link" onClick={() => setCurrentPage(idx + 1)}>{idx + 1}</button>
+                <button className="page-link shadow-none" onClick={() => setCurrentPage(idx + 1)}>{idx + 1}</button>
               </li>
             ))}
             <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
+              <button className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
             </li>
           </ul>
         </nav>
@@ -213,9 +213,9 @@ const BOQList = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-3 mb-4">
         <h2 className="fw-bold mb-0">Bill of Quantities</h2>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <BackToWorkCenter />
           {hasPermission('boq.create') && (
             <button className="btn btn-primary d-flex align-items-center gap-2" onClick={() => setShowModal(true)}>
@@ -226,27 +226,27 @@ const BOQList = () => {
       </div>
 
       <div className="card border-0 mb-4 shadow-sm">
-        <div className="card-header bg-white border-bottom-0 pt-4 pb-3 d-flex justify-content-between align-items-center">
+        <div className="card-header bg-white border-bottom-0 pt-4 pb-3">
           <div className="d-flex gap-3 w-100 flex-wrap align-items-center">
-            <div className="input-group" style={{ maxWidth: '360px', minWidth: '240px' }}>
+            <div className="input-group" style={{ maxWidth: '360px', minWidth: '200px' }}>
               <span className="input-group-text bg-white">
                 <FiSearch className="text-muted" />
               </span>
               <input 
                 type="text" 
-                className="form-control border-start-0 ps-0" 
+                className="form-control border-start-0 ps-0 shadow-none" 
                 placeholder="Search by Bill No or Project Name..." 
                 value={searchTerm}
                 onChange={handleSearch}
               />
             </div>
-            <div className="input-group" style={{ maxWidth: '240px', minWidth: '180px' }}>
+            <div className="input-group" style={{ maxWidth: '240px', minWidth: '160px' }}>
               <span className="input-group-text bg-white">
                 <FiCalendar className="text-muted" />
               </span>
               <input 
                 type="date" 
-                className="form-control border-start-0 ps-0" 
+                className="form-control border-start-0 ps-0 shadow-none" 
                 placeholder="Search by Date"
                 title="Search by Date"
                 value={selectedDate}
@@ -256,7 +256,7 @@ const BOQList = () => {
             {(searchTerm || selectedDate) && (
               <button 
                 type="button"
-                className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center gap-1"
+                className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center gap-1 ms-auto ms-sm-0"
                 onClick={handleClearFilters}
               >
                 <FiX /> Clear Filters

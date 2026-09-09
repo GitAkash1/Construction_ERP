@@ -5,15 +5,26 @@ import {
   FiHome, FiBriefcase,
   FiBox, FiLayers, FiUsers, FiCheckCircle,
   FiDollarSign, FiBarChart2, FiFileText, FiShoppingCart, FiPackage,
-  FiGrid, FiLogOut
+  FiGrid, FiLogOut, FiX
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout, hasPermission } = useAuth();
 
+  const handleLinkClick = () => {
+    if (onClose) {
+      onClose();
+    }
+  };
+
   const navLink = (to, icon, label, end = false) => (
-    <NavLink to={to} end={end} className={({ isActive }) => `erp-nav-item ${isActive ? 'active' : ''}`}>
+    <NavLink 
+      to={to} 
+      end={end} 
+      onClick={handleLinkClick}
+      className={({ isActive }) => `erp-nav-item ${isActive ? 'active' : ''}`}
+    >
       <span className="erp-nav-icon">{icon}</span>
       <span className="erp-nav-label">{label}</span>
     </NavLink>
@@ -45,13 +56,23 @@ const Sidebar = () => {
   const showSubcontractors = canSeeSubcontractors || canSeeWorkOrders || canSeeMeasurements || canSeeBills;
 
   return (
-    <div className="erp-sidebar d-flex flex-column">
+    <div className={`erp-sidebar d-flex flex-column ${isOpen ? 'open' : ''}`}>
       <div className="erp-sidebar-scroll-content">
-        <div className="erp-sidebar-header">
-          <div className="erp-logo-container">
-            <img src={logo} alt="ConstructionERP Logo" className="erp-sidebar-logo" />
+        <div className="erp-sidebar-header justify-content-between">
+          <div className="d-flex align-items-center gap-2">
+            <div className="erp-logo-container">
+              <img src={logo} alt="ConstructionERP Logo" className="erp-sidebar-logo" />
+            </div>
+            <span className="erp-brand-name">ConstructionERP</span>
           </div>
-          <span className="erp-brand-name">ConstructionERP</span>
+          <button 
+            type="button" 
+            className="btn btn-link text-white p-1 d-md-none border-0 shadow-none" 
+            onClick={onClose}
+            aria-label="Close menu"
+          >
+            <FiX size={22} />
+          </button>
         </div>
 
         <div className="erp-nav-menu">
@@ -129,3 +150,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

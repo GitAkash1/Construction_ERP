@@ -4,7 +4,7 @@ import { FiSearch } from 'react-icons/fi';
 const DataTable = ({ columns, data, onSearch, loading, actions }) => {
   return (
     <div className="card border-0">
-      <div className="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+      <div className="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-3">
         {onSearch && (
           <div className="input-group" style={{ maxWidth: '300px' }}>
             <span className="input-group-text bg-transparent border-end-0">
@@ -12,13 +12,13 @@ const DataTable = ({ columns, data, onSearch, loading, actions }) => {
             </span>
             <input 
               type="text" 
-              className="form-control border-start-0 ps-0" 
+              className="form-control border-start-0 ps-0 shadow-none" 
               placeholder="Search..." 
               onChange={(e) => onSearch(e.target.value)}
             />
           </div>
         )}
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 flex-wrap align-items-center">
           {actions}
         </div>
       </div>

@@ -141,10 +141,10 @@ const Stock = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white">
-        <span className="text-muted small">Showing page {validCurrentPage} of {totalPages}</span>
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+        <span className="text-muted small text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button type="button" className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
@@ -211,9 +211,9 @@ const Stock = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <h2 className="fw-bold mb-0">Project Stock Balance</h2>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 w-100 w-sm-auto justify-content-start justify-content-sm-end">
           <BackToWorkCenter />
         </div>
       </div>
@@ -237,7 +237,7 @@ const Stock = () => {
 
           <div className="row g-3 align-items-end">
             {/* Search Project Combobox */}
-            <div className="col-md-4 position-relative" ref={comboboxRef}>
+            <div className="col-12 col-md-4 position-relative" ref={comboboxRef}>
               <label className="form-label small text-muted fw-semibold">Project Name</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0 rounded-start-3">
@@ -275,7 +275,7 @@ const Stock = () => {
             </div>
 
             {/* From Date Filter */}
-            <div className="col-md-4">
+            <div className="col-12 col-sm-6 col-md-4">
               <label className="form-label small text-muted fw-semibold">From Date</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0 rounded-start-3">
@@ -291,7 +291,7 @@ const Stock = () => {
             </div>
 
             {/* To Date Filter */}
-            <div className="col-md-4">
+            <div className="col-12 col-sm-6 col-md-4">
               <label className="form-label small text-muted fw-semibold">To Date</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0 rounded-start-3">
@@ -322,7 +322,7 @@ const Stock = () => {
 
       {selectedBOQ && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-xl modal-dialog-centered">
+          <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content border-0 shadow-lg rounded-3">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">

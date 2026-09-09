@@ -301,10 +301,10 @@ const MaterialRequests = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white">
-        <span className="text-muted small">Showing page {validCurrentPage} of {totalPages}</span>
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+        <span className="text-muted small text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button type="button" className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
@@ -324,12 +324,12 @@ const MaterialRequests = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <h2 className="fw-bold mb-0">Material Requests</h2>
-        <div className="d-flex align-items-center gap-2 flex-wrap">
+        <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 flex-wrap w-100 w-md-auto">
           <BackToWorkCenter />
 
-          <div style={{ width: '260px', position: 'relative' }} ref={filterComboboxRef}>
+          <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={filterComboboxRef}>
             <input
               type="text"
               className="form-control"
@@ -360,7 +360,7 @@ const MaterialRequests = () => {
             )}
           </div>
 
-          <div className="input-group" style={{ width: '200px' }}>
+          <div className="input-group flex-grow-1 flex-sm-grow-0" style={{ minWidth: '170px' }}>
             <span className="input-group-text bg-white">
               <FiCalendar className="text-muted" />
             </span>
@@ -377,7 +377,7 @@ const MaterialRequests = () => {
           {(filterSearchText || selectedDate) && (
             <button 
               type="button"
-              className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center gap-1 ms-1"
+              className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center justify-content-center gap-1"
               onClick={handleClearFilters}
             >
               <FiX /> Clear Filters
@@ -385,7 +385,7 @@ const MaterialRequests = () => {
           )}
 
           {hasPermission('material_requests.create') && (
-            <button className="btn btn-primary d-flex align-items-center gap-2" onClick={openNewModal}>
+            <button className="btn btn-primary d-flex align-items-center justify-content-center gap-2 align-self-start align-self-sm-auto" onClick={openNewModal}>
               <FiPlus /> New Request
             </button>
           )}
@@ -469,7 +469,7 @@ const MaterialRequests = () => {
 
       {showModal && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-xl">
+          <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">{editMode ? 'Edit Material Request' : 'New Material Request'}</h5>
@@ -478,11 +478,11 @@ const MaterialRequests = () => {
               <form onSubmit={handleSubmit}>
                 <div className="modal-body">
                   <div className="row g-3 mb-3">
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Request Number *</label>
                       <input type="text" className="form-control" disabled value={requestNumber} placeholder="Auto-generated" />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Project *</label>
                       <div className="position-relative">
                         <input 
@@ -521,18 +521,18 @@ const MaterialRequests = () => {
                         )}
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Location Details</label>
                       <input type="text" className="form-control" readOnly value={projectLocation} placeholder="Auto-filled from project" />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">BOQ</label>
                       <select className="form-select" value={form.boq} onChange={e => handleBOQChange(e.target.value)}>
                         <option value="">Select BOQ</option>
                         {boqs.map(b => <option key={b.id} value={b.id}>{b.boq_number} - {b.title}</option>)}
                       </select>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Request Date *</label>
                       <input type="date" className="form-control" required value={form.request_date} onChange={e => setForm(f => ({ ...f, request_date: e.target.value }))} />
                     </div>
@@ -545,30 +545,30 @@ const MaterialRequests = () => {
                   </div>
                   {formItems.map((item, idx) => (
                     <div key={idx} className="row g-2 mb-2 align-items-end border-bottom pb-2">
-                      <div className="col-md-3">
+                      <div className="col-12 col-sm-6 col-md-3">
                         <label className="form-label fw-semibold small">BOQ Item</label>
                         <select className="form-select form-select-sm" value={item.boq_item} onChange={e => handleItemBOQChange(idx, e.target.value)}>
                           <option value="">Select BOQ Item</option>
                           {boqItems.map(bi => <option key={bi.id} value={bi.id}>{bi.material_name} (Bal: {bi.balance_quantity})</option>)}
                         </select>
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-6 col-sm-3 col-md-2">
                         <label className="form-label fw-semibold small">Quantity *</label>
                         <input type="number" className="form-control form-control-sm" required min="0.01" step="0.01" value={item.requested_quantity} onChange={e => updateItem(idx, 'requested_quantity', e.target.value)} />
                         {item.balance && Number(item.requested_quantity) > Number(item.balance) && (
-                          <small className="text-danger">Exceeds BOQ balance ({item.balance})</small>
+                          <small className="text-danger d-block">Exceeds ({item.balance})</small>
                         )}
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-6 col-sm-3 col-md-2">
                         <label className="form-label fw-semibold small">Unit</label>
                         <input type="text" className="form-control form-control-sm" readOnly disabled value={item.unit} />
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-10 col-sm-10 col-md-4">
                         <label className="form-label fw-semibold small">Remarks</label>
                         <input type="text" className="form-control form-control-sm" value={item.remarks} onChange={e => updateItem(idx, 'remarks', e.target.value)} />
                       </div>
-                      <div className="col-md-1">
-                        {formItems.length > 1 && <button type="button" className="btn btn-sm btn-light text-danger" onClick={() => removeItem(idx)}>✕</button>}
+                      <div className="col-2 col-sm-2 col-md-1 text-end">
+                        {formItems.length > 1 && <button type="button" className="btn btn-sm btn-light text-danger w-100" onClick={() => removeItem(idx)}>✕</button>}
                       </div>
                     </div>
                   ))}
@@ -585,7 +585,7 @@ const MaterialRequests = () => {
 
       {showViewModal && selectedRequest && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-lg">
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Request Details: {selectedRequest.request_number}</h5>

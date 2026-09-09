@@ -319,10 +319,10 @@ const SubcontractorList = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white mt-3">
-        <span className="text-muted small">Showing page {validCurrentPage} of {totalPages}</span>
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white mt-3 gap-2">
+        <span className="text-muted small text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button type="button" className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
@@ -342,20 +342,20 @@ const SubcontractorList = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <div>
           <h2 className="fw-bold mb-0">Subcontractors</h2>
           <p className="text-muted mb-0">Manage subcontractor profiles and details</p>
         </div>
         {hasPermission('subcontractors.create') && (
-          <button className="btn btn-primary d-flex align-items-center gap-2" onClick={() => handleOpenModal()}>
+          <button className="btn btn-primary d-flex align-items-center justify-content-center gap-2" onClick={() => handleOpenModal()}>
             <FiPlus /> Add Subcontractor
           </button>
         )}
       </div>
 
-      <div className="d-flex align-items-center gap-3 mb-4">
-        <div style={{ width: '300px', position: 'relative' }} ref={companyComboboxRef}>
+      <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 gap-sm-3 mb-4 flex-wrap">
+        <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={companyComboboxRef}>
           <input
             type="text"
             className="form-control"
@@ -394,14 +394,14 @@ const SubcontractorList = () => {
           )}
         </div>
 
-        <div className="d-flex align-items-center position-relative">
+        <div className="d-flex align-items-center position-relative flex-grow-1 flex-sm-grow-0" style={{ minWidth: '180px' }}>
           <input
             type="text"
             className="form-control"
             placeholder="Search mobile number..."
             value={mobileSearchText}
             onChange={handleMobileSearchChange}
-            style={{ width: '250px' }}
+            style={{ width: '100%' }}
           />
           {mobileSearchText && (
             <button
@@ -426,7 +426,7 @@ const SubcontractorList = () => {
       {/* Add / Edit Modal */}
       {showModal && (
         <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
-          <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '12px' }}>
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">{editMode ? 'Edit Subcontractor' : 'Add Subcontractor'}</h5>
@@ -435,7 +435,7 @@ const SubcontractorList = () => {
               <form onSubmit={handleSubmit}>
                 <div className="modal-body">
                   <div className="row g-3">
-                    <div className="col-md-6">
+                    <div className="col-12 col-sm-6">
                       <label className="form-label">Company Name *</label>
                       <input 
                         type="text" 
@@ -447,7 +447,7 @@ const SubcontractorList = () => {
                       />
                       {errors.subcontractor_name && <div className="invalid-feedback">{errors.subcontractor_name}</div>}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-sm-6">
                       <label className="form-label">Work Category *</label>
                       <input 
                         type="text" 
@@ -536,7 +536,7 @@ const SubcontractorList = () => {
       {/* Details View Modal */}
       {showDetailsModal && selectedSubcontractor && (
         <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
-          <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
             <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px', overflow: 'hidden' }}>
               <div className="modal-header bg-dark text-white border-0 py-3">
                 <h5 className="modal-title fw-bold">Subcontractor Details</h5>
@@ -553,7 +553,7 @@ const SubcontractorList = () => {
               <div className="modal-body p-4" style={{ backgroundColor: '#f8fafc' }}>
                 <div className="row g-4">
                   {/* Section A: Subcontractor Details */}
-                  <div className="col-md-6">
+                  <div className="col-12 col-md-6">
                     <div className="card border-0 shadow-sm h-100" style={{ borderRadius: '10px' }}>
                       <div className="card-header bg-white border-0 pt-3 pb-0">
                         <h6 className="text-primary fw-bold mb-0">SECTION A – SUBCONTRACTOR DETAILS</h6>
@@ -580,7 +580,7 @@ const SubcontractorList = () => {
                   </div>
 
                   {/* Section B: Communication Details */}
-                  <div className="col-md-6">
+                  <div className="col-12 col-md-6">
                     <div className="card border-0 shadow-sm h-100" style={{ borderRadius: '10px' }}>
                       <div className="card-header bg-white border-0 pt-3 pb-0">
                         <h6 className="text-primary fw-bold mb-0">SECTION B – COMMUNICATION DETAILS</h6>

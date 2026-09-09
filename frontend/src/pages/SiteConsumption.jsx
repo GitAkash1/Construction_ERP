@@ -178,9 +178,10 @@ const SiteConsumption = () => {
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     return (
-      <div className="d-flex justify-content-end p-3 border-top bg-white">
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+        <span className="text-muted small text-center text-sm-start">Showing page {validCurrentPage} of {totalPages}</span>
+        <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+          <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
             <li className={`page-item ${validCurrentPage === 1 ? 'disabled' : ''}`}>
               <button type="button" className="page-link shadow-none" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Previous</button>
             </li>
@@ -200,12 +201,12 @@ const SiteConsumption = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <h2 className="fw-bold mb-0">Site Consumption</h2>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <BackToWorkCenter />
           {hasPermission('site_consumption.create') && (
-            <button className="btn btn-primary d-flex align-items-center gap-2" onClick={() => setShowModal(true)}>
+            <button className="btn btn-primary d-flex align-items-center justify-content-center gap-2" onClick={() => setShowModal(true)}>
               <FiPlus /> Record Consumption
             </button>
           )}
@@ -215,14 +216,14 @@ const SiteConsumption = () => {
       {/* Search & Filter Bar */}
       <div className="card border-0 shadow-sm rounded-4 mb-4 bg-white">
         <div className="card-body p-3">
-          <div className="d-flex align-items-center gap-3 flex-wrap">
+          <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 gap-sm-3 flex-wrap">
             <div className="d-flex align-items-center text-dark fw-bold me-2">
               <FiFilter className="text-primary me-2" />
               <span>Search & Filter</span>
             </div>
 
             {/* Project Search Combobox */}
-            <div style={{ width: '280px', position: 'relative' }} ref={filterComboboxRef}>
+            <div className="flex-grow-1" style={{ minWidth: '200px', maxWidth: '100%', position: 'relative' }} ref={filterComboboxRef}>
               <input
                 type="text"
                 className="form-control"
@@ -254,7 +255,7 @@ const SiteConsumption = () => {
             </div>
 
             {/* Search by Date Input */}
-            <div className="input-group" style={{ maxWidth: '220px' }}>
+            <div className="input-group flex-grow-1 flex-sm-grow-0" style={{ minWidth: '170px' }}>
               <span className="input-group-text bg-white">
                 <FiCalendar className="text-muted" />
               </span>
@@ -275,7 +276,7 @@ const SiteConsumption = () => {
             {(filterSearchText || selectedDate || selectedProjectId) && (
               <button 
                 type="button"
-                className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center gap-1 ms-auto"
+                className="btn btn-link text-danger p-0 text-decoration-none small d-flex align-items-center justify-content-center gap-1 ms-sm-auto"
                 onClick={() => {
                   setFilterSearchText('');
                   setSelectedProjectId(null);
@@ -370,7 +371,7 @@ const SiteConsumption = () => {
 
       {showModal && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1055 }}>
-          <div className="modal-dialog modal-xl">
+          <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Record Site Consumption</h5>
@@ -379,7 +380,7 @@ const SiteConsumption = () => {
               <form onSubmit={handleSubmit}>
                 <div className="modal-body">
                   <div className="row g-3 mb-3">
-                    <div className="col-md-3 position-relative">
+                    <div className="col-12 col-sm-6 col-md-3 position-relative">
                       <label className="form-label fw-semibold">Project Name *</label>
                       <input 
                         type="text" 
@@ -410,15 +411,15 @@ const SiteConsumption = () => {
                         </div>
                       )}
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Location</label>
                       <input type="text" className="form-control" readOnly value={location} placeholder="Auto-populated Location" />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Activity *</label>
                       <input type="text" className="form-control" required value={form.activity} onChange={e => setForm(f => ({ ...f, activity: e.target.value }))} placeholder="e.g. Concrete Work" />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-12 col-sm-6 col-md-3">
                       <label className="form-label fw-semibold">Date *</label>
                       <input type="date" className="form-control" required value={form.consumption_date} onChange={e => setForm(f => ({ ...f, consumption_date: e.target.value }))} />
                     </div>
@@ -435,34 +436,34 @@ const SiteConsumption = () => {
                   </div>
                   {items.map((item, idx) => (
                     <div key={idx} className="row g-2 mb-2 align-items-end border-bottom pb-2">
-                      <div className="col-md-3">
+                      <div className="col-12 col-sm-6 col-md-3">
                         <label className="form-label fw-semibold small">BOQ Item</label>
                         <select className="form-select form-select-sm" value={item.boq_item} onChange={e => updateItem(idx, 'boq_item', e.target.value)}>
                           <option value="">Select BOQ Item (Optional)</option>
                           {boqItems.map(bi => <option key={bi.id} value={bi.id}>{bi.material_name} (Bal: {bi.balance_quantity})</option>)}
                         </select>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-12 col-sm-6 col-md-3">
                         <label className="form-label fw-semibold small">Material *</label>
                         <select className="form-select form-select-sm" required value={item.material} onChange={e => updateItem(idx, 'material', e.target.value)}>
                           <option value="">Select Material</option>
                           {materials.map(m => <option key={m.id} value={m.id}>{m.material_name} (Stock: {m.current_stock} {m.unit})</option>)}
                         </select>
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-6 col-sm-4 col-md-2">
                         <label className="form-label fw-semibold small">Quantity *</label>
                         <input type="number" className="form-control form-control-sm" required min="0.01" step="0.01" value={item.quantity} onChange={e => updateItem(idx, 'quantity', e.target.value)} />
                       </div>
-                      <div className="col-md-2">
+                      <div className="col-6 col-sm-4 col-md-2">
                         <label className="form-label fw-semibold small">Unit</label>
                         <input type="text" className="form-control form-control-sm" value={item.unit} onChange={e => updateItem(idx, 'unit', e.target.value)} />
                       </div>
-                      <div className="col-md-1">
+                      <div className="col-10 col-sm-3 col-md-1">
                         <label className="form-label fw-semibold small">Rate</label>
                         <input type="number" className="form-control form-control-sm" min="0" step="0.01" value={item.unit_price} onChange={e => updateItem(idx, 'unit_price', e.target.value)} />
                       </div>
-                      <div className="col-md-1">
-                        {items.length > 1 && <button type="button" className="btn btn-sm btn-light text-danger mt-4" onClick={() => setItems(i => i.filter((_, j) => j !== idx))}>✕</button>}
+                      <div className="col-2 col-sm-1 col-md-1 text-end">
+                        {items.length > 1 && <button type="button" className="btn btn-sm btn-light text-danger w-100" onClick={() => setItems(i => i.filter((_, j) => j !== idx))}>✕</button>}
                       </div>
                     </div>
                   ))}

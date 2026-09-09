@@ -77,14 +77,16 @@ const BOQDetail = () => {
 
   return (
     <div>
-      <div className="d-flex align-items-center gap-3 mb-4">
-        <Link to="/boq" className="btn btn-light rounded-circle p-2"><FiArrowLeft size={20} /></Link>
-        <div>
-          <h2 className="fw-bold mb-0">{boq.boq_number}</h2>
-          <span className="text-muted">{boq.title} · {boq.project_name}</span>
+      <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mb-4">
+        <div className="d-flex align-items-center gap-3">
+          <Link to="/boq" className="btn btn-light rounded-circle p-2 flex-shrink-0"><FiArrowLeft size={20} /></Link>
+          <div>
+            <h2 className="fw-bold mb-0 fs-4 fs-md-2">{boq.boq_number}</h2>
+            <span className="text-muted small">{boq.title} · {boq.project_name}</span>
+          </div>
         </div>
         {hasPermission('boq.edit') && (
-          <button className="btn btn-primary ms-auto d-flex align-items-center gap-2" onClick={() => setShowModal(true)}>
+          <button className="btn btn-primary ms-sm-auto w-100 w-sm-auto d-flex align-items-center justify-content-center gap-2" onClick={() => setShowModal(true)}>
             <FiPlus /> Add Item
           </button>
         )}
@@ -94,11 +96,11 @@ const BOQDetail = () => {
       <div className="card border-0 mb-4">
         <div className="card-body">
           <div className="row g-3">
-            <div className="col-md-4">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className="text-muted small fw-semibold text-uppercase mb-1">Total BOQ Estimated Cost</div>
               <div className="fs-4 fw-bold text-primary">₹{Number(boq.total_value || 0).toLocaleString('en-IN')}</div>
             </div>
-            <div className="col-md-4">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className="text-muted small fw-semibold text-uppercase mb-1">Items</div>
               <div className="fs-4 fw-bold">{boq.items?.length || 0}</div>
             </div>
@@ -163,7 +165,7 @@ const BOQDetail = () => {
 
       {showModal && (
         <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title fw-bold">Add BOQ Item</h5>

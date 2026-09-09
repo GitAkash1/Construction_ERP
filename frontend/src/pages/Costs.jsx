@@ -145,12 +145,12 @@ const Costs = () => {
   return (
     <div>
       {/* Top Header Section */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <div>
           <h2 className="fw-bold mb-0">Project Costs</h2>
           <p className="text-muted small mb-0">Monitor construction project budget utilization and transactional costs</p>
         </div>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 w-100 w-sm-auto justify-content-start justify-content-sm-end">
           {selectedProject && (
             <button className="btn btn-outline-secondary d-flex align-items-center gap-1" onClick={handleRefresh} disabled={loading || loadingTransactions}>
               <FiRefreshCw className={loading || loadingTransactions ? 'spin' : ''} />
@@ -165,7 +165,7 @@ const Costs = () => {
       <div className="card mb-4 border-0 shadow-sm">
         <div className="card-body">
           <div className="row align-items-center">
-            <div className="col-md-6">
+            <div className="col-12 col-md-6">
               <label className="form-label fw-bold text-muted small uppercase mb-1">Select Project</label>
               <div style={{ position: 'relative' }} ref={projectComboboxRef}>
                 <div className="input-group">
@@ -212,7 +212,7 @@ const Costs = () => {
               </div>
             </div>
             {selectedProject && (
-              <div className="col-md-6 mt-3 mt-md-0">
+              <div className="col-12 col-md-6 mt-3 mt-md-0">
                 <span className="text-muted small d-block">Selected Project Name</span>
                 <span className="fw-bold text-primary fs-5">{selectedProject.project_name}</span>
               </div>
@@ -237,7 +237,7 @@ const Costs = () => {
         <>
           {/* Summary Cards */}
           <div className="row g-3 mb-4">
-            <div className="col-md-4 col-sm-6">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body">
                   <span className="text-muted small fw-semibold uppercase d-block mb-1">Project Budget</span>
@@ -245,7 +245,7 @@ const Costs = () => {
                 </div>
               </div>
             </div>
-            <div className="col-md-4 col-sm-6">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className="card border-0 shadow-sm h-100 border-start border-success border-4">
                 <div className="card-body">
                   <span className="text-muted small fw-semibold uppercase d-block mb-1">Actual Cost</span>
@@ -253,7 +253,7 @@ const Costs = () => {
                 </div>
               </div>
             </div>
-            <div className="col-md-4 col-sm-6">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className="card border-0 shadow-sm h-100 border-start border-warning border-4">
                 <div className="card-body">
                   <span className="text-muted small fw-semibold uppercase d-block mb-1">Committed Cost</span>
@@ -261,7 +261,7 @@ const Costs = () => {
                 </div>
               </div>
             </div>
-            <div className="col-md-4 col-sm-6">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body">
                   <span className="text-muted small fw-semibold uppercase d-block mb-1">Projected Final Cost</span>
@@ -269,7 +269,7 @@ const Costs = () => {
                 </div>
               </div>
             </div>
-            <div className="col-md-4 col-sm-6">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className={`card border-0 shadow-sm h-100 border-start border-4 ${summary.remaining_budget < 0 ? 'border-danger bg-danger bg-opacity-10' : 'border-info'}`}>
                 <div className="card-body">
                   <span className="text-muted small fw-semibold uppercase d-block mb-1">Remaining Budget</span>
@@ -282,11 +282,11 @@ const Costs = () => {
                 </div>
               </div>
             </div>
-            <div className="col-md-4 col-sm-6">
+            <div className="col-12 col-sm-6 col-md-4">
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body">
                   <span className="text-muted small fw-semibold uppercase d-block mb-1">Cost Utilization %</span>
-                  <h3 className="fw-bold mb-0">{formatPercent(summary.cost_utilization_percentage)}</h3>
+                  <h3 className="fw-bold mb-0">{formatPercent(summary.cost_util_percentage || summary.cost_utilization_percentage)}</h3>
                   {summary.cost_utilization_percentage !== null && (
                     <div className="progress mt-2" style={{ height: '6px' }}>
                       <div
@@ -306,12 +306,12 @@ const Costs = () => {
           {/* Detailed Transaction Table Section */}
           <div className="card border-0 shadow-sm">
             <div className="card-header bg-white border-0 pt-4 pb-0">
-              <div className="d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
                 <h5 className="fw-bold mb-0">Cost Transactions</h5>
                 
                 {/* Filters Row */}
-                <div className="d-flex align-items-center gap-2">
-                  <div className="input-group input-group-sm" style={{ width: '180px' }}>
+                <div className="d-flex align-items-center gap-2 flex-wrap w-100 w-sm-auto">
+                  <div className="input-group input-group-sm flex-grow-1 flex-sm-grow-0" style={{ minWidth: '150px' }}>
                     <span className="input-group-text bg-transparent border-end-0">
                       <FiFilter className="text-muted" />
                     </span>
@@ -332,7 +332,7 @@ const Costs = () => {
                     </select>
                   </div>
 
-                  <div className="input-group input-group-sm" style={{ width: '180px' }}>
+                  <div className="input-group input-group-sm flex-grow-1 flex-sm-grow-0" style={{ minWidth: '150px' }}>
                     <span className="input-group-text bg-transparent border-end-0">
                       <FiCalendar className="text-muted" />
                     </span>
@@ -414,12 +414,12 @@ const Costs = () => {
 
               {/* Pagination controls */}
               {totalPages > 1 && (
-                <div className="d-flex justify-content-between align-items-center p-3 border-top bg-white">
-                  <span className="text-muted small">
+                <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white gap-2">
+                  <span className="text-muted small text-center text-sm-start">
                     Showing page {currentPage} of {totalPages} ({transactionsCount} total transactions)
                   </span>
-                  <nav>
-                    <ul className="pagination pagination-sm mb-0">
+                  <nav className="overflow-auto w-100 w-sm-auto d-flex justify-content-center">
+                    <ul className="pagination pagination-sm mb-0 flex-wrap justify-content-center">
                       <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                         <button
                           type="button"

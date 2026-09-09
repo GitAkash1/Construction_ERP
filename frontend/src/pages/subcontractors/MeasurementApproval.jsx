@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DataTable from '../../components/DataTable';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
@@ -13,6 +13,8 @@ const MeasurementApproval = () => {
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState('');
+  const [showProjectDropdown, setShowProjectDropdown] = useState(false);
+  const projectDropdownRef = useRef(null);
   
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -20,6 +22,16 @@ const MeasurementApproval = () => {
   
   const [approveForm, setApproveForm] = useState({ approved_quantity: '' });
   const [rejectForm, setRejectForm] = useState({ rejection_reason: '' });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (projectDropdownRef.current && !projectDropdownRef.current.contains(event.target)) {
+        setShowProjectDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     fetchProjects();
@@ -130,31 +142,73 @@ const MeasurementApproval = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
         <div>
           <h2 className="fw-bold mb-0">Measurement Approval</h2>
           <p className="text-muted mb-0">Review and approve subcontractor work progress</p>
         </div>
-        <div className="d-flex align-items-center gap-2">
-          <BackToWorkCenter />
-          <div style={{ minWidth: '250px' }}>
-            <select 
-              className="form-select" 
-              value={selectedProject} 
-              onChange={(e) => setSelectedProject(e.target.value)}
+        <div className="d-flex align-items-center gap-2 flex-wrap w-100 w-sm-auto justify-content-start justify-content-sm-end">
+          <div className="w-100 w-sm-auto">
+            <BackToWorkCenter />
+          </div>
+          {/* All Projects Dropdown with Mobile Viewport Containment */}
+          <div className="measurement-project-select-wrapper work-order-project-select-wrapper position-relative flex-grow-1 flex-sm-grow-0" style={{ minWidth: '200px' }} ref={projectDropdownRef}>
+            <button
+              type="button"
+              className="form-select text-start d-flex justify-content-between align-items-center shadow-none w-100 measurement-project-select work-order-project-select"
+              onClick={() => setShowProjectDropdown(prev => !prev)}
+              aria-expanded={showProjectDropdown}
             >
-              <option value="">All Projects</option>
-              {projects.map(p => (
-                <option key={p.id} value={p.id}>{p.project_name}</option>
-              ))}
-            </select>
+              <span className={`text-truncate ${!selectedProject ? 'text-muted' : 'text-dark fw-medium'}`}>
+                {projects.find(p => String(p.id) === String(selectedProject))?.project_name || 'All Projects'}
+              </span>
+            </button>
+
+            {showProjectDropdown && (
+              <div 
+                className="measurement-project-dropdown work-order-project-dropdown position-absolute shadow-sm border rounded bg-white mt-1 py-1"
+                style={{
+                  zIndex: 1050,
+                  maxHeight: '240px',
+                  overflowY: 'auto',
+                  left: 0,
+                  right: 0,
+                  boxSizing: 'border-box'
+                }}
+              >
+                <button
+                  type="button"
+                  className={`dropdown-item py-2 px-3 ${!selectedProject ? 'active fw-semibold' : ''}`}
+                  onClick={() => {
+                    setSelectedProject('');
+                    setShowProjectDropdown(false);
+                  }}
+                >
+                  All Projects
+                </button>
+                {projects.map(p => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={`dropdown-item py-2 px-3 text-wrap ${String(selectedProject) === String(p.id) ? 'active fw-semibold' : ''}`}
+                    style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
+                    onClick={() => {
+                      setSelectedProject(p.id);
+                      setShowProjectDropdown(false);
+                    }}
+                  >
+                    {p.project_name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       <div className="card border-0 mb-4 shadow-sm">
         <div className="card-header bg-white">
-          <ul className="nav nav-tabs card-header-tabs">
+          <ul className="nav nav-tabs card-header-tabs overflow-auto flex-nowrap">
             {['Pending', 'Approved', 'Rejected'].map(tab => (
               <li className="nav-item" key={tab}>
                 <button 
@@ -178,11 +232,11 @@ const MeasurementApproval = () => {
 
       {/* Approve Modal */}
       {showApproveModal && selectedMeasurement && (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Approve Measurement</h5>
+                <h5 className="modal-title fw-bold">Approve Measurement</h5>
                 <button type="button" className="btn-close" onClick={() => setShowApproveModal(false)}></button>
               </div>
               <form onSubmit={handleApprove}>
@@ -220,11 +274,11 @@ const MeasurementApproval = () => {
 
       {/* Reject Modal */}
       {showRejectModal && selectedMeasurement && (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Reject Measurement</h5>
+                <h5 className="modal-title fw-bold">Reject Measurement</h5>
                 <button type="button" className="btn-close" onClick={() => setShowRejectModal(false)}></button>
               </div>
               <form onSubmit={handleReject}>
