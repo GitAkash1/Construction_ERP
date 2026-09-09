@@ -303,52 +303,6 @@ const Costs = () => {
               </div>
             </div>
           </div>
-
-          {/* Breakdown Section */}
-          <h5 className="fw-bold mb-3">Cost Breakdown</h5>
-          <div className="row g-3 mb-4">
-            <div className="col">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body text-center p-3">
-                  <span className="text-muted small d-block mb-1">Material Cost</span>
-                  <span className="fw-bold text-dark fs-5">{formatCurrency(summary.breakdown.material)}</span>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body text-center p-3">
-                  <span className="text-muted small d-block mb-1">Labour Cost</span>
-                  <span className="fw-bold text-dark fs-5">{formatCurrency(summary.breakdown.labour)}</span>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body text-center p-3">
-                  <span className="text-muted small d-block mb-1">Subcontract Cost</span>
-                  <span className="fw-bold text-dark fs-5">{formatCurrency(summary.breakdown.subcontract)}</span>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body text-center p-3">
-                  <span className="text-muted small d-block mb-1">Equipment Cost</span>
-                  <span className="fw-bold text-dark fs-5">{formatCurrency(summary.breakdown.equipment)}</span>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body text-center p-3">
-                  <span className="text-muted small d-block mb-1">Other Expenses</span>
-                  <span className="fw-bold text-dark fs-5">{formatCurrency(summary.breakdown.other)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Detailed Transaction Table Section */}
           <div className="card border-0 shadow-sm">
             <div className="card-header bg-white border-0 pt-4 pb-0">
