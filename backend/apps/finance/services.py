@@ -38,13 +38,17 @@ class ProjectCostService:
             total=Sum((F('quantity') - F('received_quantity')) * F('unit_price'))
         )['total'] or Decimal('0.00')
 
-        # 3. Subcontract Cost (ProjectCost category='Contractor')
-        subcontract_actual = ProjectCost.objects.filter(
-            project_id=project_id,
-            cost_category='Contractor'
-        ).aggregate(
-            total=Sum('amount')
-        )['total'] or Decimal('0.00')
+        # 3, 4, 5, 6: ProjectCost Aggregates (Contractor, Labour, Equipment, Other)
+        cost_aggs = ProjectCost.objects.filter(project_id=project_id).values('cost_category').annotate(total=Sum('amount'))
+        cost_map = {c['cost_category']: (c['total'] or Decimal('0.00')) for c in cost_aggs}
+
+        subcontract_actual = cost_map.get('Contractor', Decimal('0.00'))
+        labour_actual = cost_map.get('Labour', Decimal('0.00'))
+        equipment_actual = cost_map.get('Equipment', Decimal('0.00'))
+        other_actual = sum(
+            total for cat, total in cost_map.items() 
+            if cat not in ['Contractor', 'Labour', 'Equipment']
+        ) or Decimal('0.00')
 
         # Subcontract Committed (Active Work Orders contract_value - approved bills)
         subcontract_committed = Decimal('0.00')
@@ -53,35 +57,12 @@ class ProjectCostService:
             status__in=['Issued', 'In Progress']
         ).prefetch_related('bills')
         for wo in wos:
-            approved_bills_sum = wo.bills.filter(
-                status__in=['Approved', 'Paid']
-            ).aggregate(total=Sum('total_amount'))['total'] or Decimal('0.00')
+            approved_bills_sum = sum(
+                b.total_amount for b in wo.bills.all()
+                if b.status in ['Approved', 'Paid']
+            ) or Decimal('0.00')
             subcontract_committed += max(Decimal('0.00'), wo.contract_value - approved_bills_sum)
 
-        # 4. Labour Cost (ProjectCost category='Labour')
-        labour_actual = ProjectCost.objects.filter(
-            project_id=project_id,
-            cost_category='Labour'
-        ).aggregate(
-            total=Sum('amount')
-        )['total'] or Decimal('0.00')
-
-        # 5. Equipment Cost (ProjectCost category='Equipment')
-        equipment_actual = ProjectCost.objects.filter(
-            project_id=project_id,
-            cost_category='Equipment'
-        ).aggregate(
-            total=Sum('amount')
-        )['total'] or Decimal('0.00')
-
-        # 6. Other Expenses (ProjectCost category other than Contractor, Labour, Equipment)
-        other_actual = ProjectCost.objects.filter(
-            project_id=project_id
-        ).exclude(
-            cost_category__in=['Contractor', 'Labour', 'Equipment']
-        ).aggregate(
-            total=Sum('amount')
-        )['total'] or Decimal('0.00')
 
         # Aggregated Totals
         actual_cost = material_actual + subcontract_actual + labour_actual + equipment_actual + other_actual
@@ -122,7 +103,7 @@ class ProjectCostService:
             goods_receipt__project_id=project_id
         ).exclude(
             goods_receipt__purchase_order__status='Cancelled'
-        ).select_related('goods_receipt', 'po_item__material')
+        ).select_related('goods_receipt__purchase_order', 'po_item__material')
 
         for item in grn_items:
             amt = item.received_quantity * item.po_item.unit_price
@@ -161,9 +142,10 @@ class ProjectCostService:
         ).prefetch_related('bills')
 
         for wo in wos:
-            approved_bills_sum = wo.bills.filter(
-                status__in=['Approved', 'Paid']
-            ).aggregate(total=Sum('total_amount'))['total'] or Decimal('0.00')
+            approved_bills_sum = sum(
+                b.total_amount for b in wo.bills.all()
+                if b.status in ['Approved', 'Paid']
+            ) or Decimal('0.00')
             remaining_val = wo.contract_value - approved_bills_sum
             if remaining_val > 0:
                 date_val = wo.planned_completion_date or wo.created_at.date()

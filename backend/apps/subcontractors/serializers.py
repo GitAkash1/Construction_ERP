@@ -57,30 +57,49 @@ class SubcontractWorkOrderSerializer(serializers.ModelSerializer):
             return f"{obj.boq_item.boq.boq_number} - {mat_name}"
         return None
 
+    def _get_sums(self, obj):
+        if not hasattr(obj, '_cached_sums'):
+            approved_qty = Decimal('0.00')
+            submitted_qty = Decimal('0.00')
+            for p in obj.progress_records.all():
+                if p.status == 'Approved':
+                    approved_qty += p.approved_quantity or Decimal('0.00')
+                if p.status != 'Rejected':
+                    submitted_qty += p.submitted_quantity or Decimal('0.00')
+            
+            billed_qty = Decimal('0.00')
+            for b in obj.bills.all():
+                if b.status in ['Draft', 'Submitted', 'Approved', 'Paid']:
+                    billed_qty += b.bill_quantity or Decimal('0.00')
+            
+            obj._cached_sums = (approved_qty, submitted_qty, billed_qty)
+        return obj._cached_sums
+
     def get_approved_quantity(self, obj):
-        result = obj.progress_records.filter(status='Approved').aggregate(total=Sum('approved_quantity'))['total']
-        return result or Decimal('0.00')
+        return self._get_sums(obj)[0]
 
     def get_submitted_quantity_total(self, obj):
-        result = obj.progress_records.exclude(status='Rejected').aggregate(total=Sum('submitted_quantity'))['total']
-        return result or Decimal('0.00')
+        return self._get_sums(obj)[1]
 
     def get_billed_quantity(self, obj):
-        result = obj.bills.filter(status__in=['Draft', 'Submitted', 'Approved', 'Paid']).aggregate(total=Sum('bill_quantity'))['total']
-        return result or Decimal('0.00')
+        return self._get_sums(obj)[2]
 
     def get_balance_quantity(self, obj):
-        return obj.contract_quantity - self.get_approved_quantity(obj)
+        approved_qty, _, _ = self._get_sums(obj)
+        return obj.contract_quantity - approved_qty
         
     def get_remaining_work_quantity(self, obj):
-        return obj.contract_quantity - self.get_submitted_quantity_total(obj)
+        _, submitted_qty, _ = self._get_sums(obj)
+        return obj.contract_quantity - submitted_qty
         
     def get_remaining_billable_quantity(self, obj):
-        return self.get_approved_quantity(obj) - self.get_billed_quantity(obj)
+        approved_qty, _, billed_qty = self._get_sums(obj)
+        return approved_qty - billed_qty
 
     def get_progress_percentage(self, obj):
+        approved_qty, _, _ = self._get_sums(obj)
         if obj.contract_quantity > 0:
-            pct = (self.get_approved_quantity(obj) / obj.contract_quantity) * 100
+            pct = (approved_qty / obj.contract_quantity) * 100
             return round(pct, 2)
         return Decimal('0.00')
 

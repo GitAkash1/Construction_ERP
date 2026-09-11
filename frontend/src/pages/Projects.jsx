@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus, FiEye, FiTrash2, FiSearch, FiFilter, FiX } from 'react-icons/fi';
 import { BsPencilSquare } from 'react-icons/bs';
@@ -29,6 +29,17 @@ const Projects = () => {
   
   // UI States
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchContainerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   
   // Modal & Form States
   const [showModal, setShowModal] = useState(false);
@@ -300,7 +311,7 @@ const Projects = () => {
           
           <div className="row g-3">
             {/* Project Search (Hybrid) */}
-            <div className="col-12 col-md-4 position-relative">
+            <div className="col-12 col-md-4 position-relative" ref={searchContainerRef}>
               <label className="form-label small text-muted fw-semibold">Project Name</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0 rounded-start-3">
@@ -311,9 +322,11 @@ const Projects = () => {
                   className="form-control bg-light border-start-0 ps-0 rounded-end-3 shadow-none"
                   placeholder="Type to search..."
                   value={searchTerm}
-                  onChange={(e) => updateFilter(setSearchTerm, e.target.value)}
+                  onChange={(e) => {
+                    updateFilter(setSearchTerm, e.target.value);
+                    setShowSuggestions(true);
+                  }}
                   onFocus={() => setShowSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 />
               </div>
               {showSuggestions && (searchTerm || projectNames.length > 0) && (
@@ -324,6 +337,11 @@ const Projects = () => {
                         key={idx} 
                         className="list-group-item list-group-item-action border-0 px-3 py-2 text-dark"
                         style={{ cursor: 'pointer', fontSize: '0.9rem' }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          updateFilter(setSearchTerm, name);
+                          setShowSuggestions(false);
+                        }}
                         onClick={() => {
                           updateFilter(setSearchTerm, name);
                           setShowSuggestions(false);

@@ -70,7 +70,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<ProtectedAuthRoute><Login /></ProtectedAuthRoute>} />
           <Route path="/" element={<ProtectedRoute><ERPLayout /></ProtectedRoute>}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Navigate to="/work-center" replace />} />
+            <Route path="overview" element={<Dashboard />} />
             <Route path="work-center" element={<WorkCenter />} />
             <Route path="projects" element={<ProtectedRoute permission="projects.view"><Projects /></ProtectedRoute>} />
             <Route path="projects/:id" element={<ProtectedRoute permission="projects.view"><ProjectDetail /></ProtectedRoute>} />

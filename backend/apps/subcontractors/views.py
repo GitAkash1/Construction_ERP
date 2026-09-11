@@ -38,7 +38,9 @@ class SubcontractWorkOrderViewSet(viewsets.ModelViewSet):
         'issue': 'work_orders.edit',
         'cancel': 'work_orders.edit'
     }
-    queryset = SubcontractWorkOrder.objects.select_related('project', 'boq_item', 'subcontractor').order_by('-id')
+    queryset = SubcontractWorkOrder.objects.select_related(
+        'project', 'boq_item__material', 'boq_item__boq', 'subcontractor'
+    ).prefetch_related('progress_records', 'bills').order_by('-id')
     serializer_class = SubcontractWorkOrderSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['status', 'project', 'subcontractor']

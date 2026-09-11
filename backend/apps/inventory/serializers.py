@@ -40,6 +40,8 @@ class ProjectMaterialStockSerializer(serializers.ModelSerializer):
         return obj.boq_item.unit
 
     def get_allocated_work_order_qty(self, obj):
+        if hasattr(obj, 'annotated_allocated_wo_qty'):
+            return obj.annotated_allocated_wo_qty
         from apps.subcontractors.models import SubcontractWorkOrder
         from django.db.models import Sum
         from decimal import Decimal

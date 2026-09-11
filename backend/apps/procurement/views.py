@@ -30,7 +30,9 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         'undo': 'material_requests.approve',
         'destroy': 'material_requests.create'
     }
-    queryset = MaterialRequest.objects.select_related('project', 'site', 'boq').prefetch_related('items__material').order_by('-created_at')
+    queryset = MaterialRequest.objects.select_related(
+        'project', 'site', 'boq', 'requested_by', 'approved_by'
+    ).prefetch_related('items__material', 'items__boq_item').order_by('-created_at')
     serializer_class = MaterialRequestSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['status', 'project', 'site', 'boq', 'request_date']
@@ -273,7 +275,9 @@ class MaterialRequestItemViewSet(viewsets.ModelViewSet):
 
 class PurchaseOrderViewSet(viewsets.ModelViewSet):
     rbac_module = 'purchase_orders'
-    queryset = PurchaseOrder.objects.select_related('project').prefetch_related('items__material').order_by('-order_date')
+    queryset = PurchaseOrder.objects.select_related(
+        'project', 'material_request'
+    ).prefetch_related('items__material', 'items__material_request_item').order_by('-order_date')
     serializer_class = PurchaseOrderSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['status', 'project']
@@ -352,7 +356,9 @@ class PurchaseOrderItemViewSet(viewsets.ModelViewSet):
 
 class GoodsReceiptViewSet(viewsets.ModelViewSet):
     rbac_module = 'material_receipts'
-    queryset = GoodsReceipt.objects.select_related('purchase_order', 'project', 'site').prefetch_related('items').order_by('-receipt_date')
+    queryset = GoodsReceipt.objects.select_related(
+        'purchase_order', 'project', 'site'
+    ).prefetch_related('items__po_item__material').order_by('-receipt_date')
     serializer_class = GoodsReceiptSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['purchase_order', 'project', 'site']

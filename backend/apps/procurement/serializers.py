@@ -77,9 +77,9 @@ class PurchaseOrderItemSerializer(serializers.ModelSerializer):
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
     items = PurchaseOrderItemSerializer(many=True, read_only=True)
-    subtotal = serializers.ReadOnlyField()
-    tax_amount = serializers.ReadOnlyField()
-    grand_total = serializers.ReadOnlyField()
+    subtotal = serializers.SerializerMethodField()
+    tax_amount = serializers.SerializerMethodField()
+    grand_total = serializers.SerializerMethodField()
     project_name = serializers.CharField(source='project.project_name', read_only=True)
     material_request_number = serializers.CharField(source='material_request.request_number', read_only=True)
     po_number = serializers.CharField(read_only=True)
@@ -94,6 +94,26 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
             'tax_percentage', 'subtotal', 'tax_amount', 'grand_total',
             'status', 'remarks', 'items', 'created_at', 'updated_at',
         ]
+
+    def _get_computed_totals(self, obj):
+        if not hasattr(obj, '_cached_totals'):
+            items = obj.items.all()
+            subtotal = sum(((item.quantity or 0) * (item.unit_price or 0)) for item in items)
+            tax_pct = obj.tax_percentage or 0
+            tax_amount = round(subtotal * tax_pct / 100, 2)
+            grand_total = subtotal + tax_amount
+            obj._cached_totals = (subtotal, tax_amount, grand_total)
+        return obj._cached_totals
+
+    def get_subtotal(self, obj):
+        return self._get_computed_totals(obj)[0]
+
+    def get_tax_amount(self, obj):
+        return self._get_computed_totals(obj)[1]
+
+    def get_grand_total(self, obj):
+        return self._get_computed_totals(obj)[2]
+
 
 
 class GoodsReceiptItemSerializer(serializers.ModelSerializer):

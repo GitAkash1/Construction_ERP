@@ -11,16 +11,26 @@ from apps.sites.models import SiteConsumption, SiteConsumptionItem
 from apps.finance.models import ProjectCost
 
 
+from django.db.models import Sum, F, Q, Count, DecimalField, Value
+from apps.sites.models import Site
+from apps.procurement.models import MaterialRequest
+
 class DashboardStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        total_projects = Project.objects.count()
-        active_projects = Project.objects.filter(status='Active').count()
-        completed_projects = Project.objects.filter(status='Completed').count()
-        delayed_projects = Project.objects.filter(status='Delayed').count()
-        active_sites = __import__('apps.sites.models', fromlist=['Site']).Site.objects.filter(status='Active').count()
-        pending_material_requests = __import__('apps.procurement.models', fromlist=['MaterialRequest']).MaterialRequest.objects.filter(status='Pending').count()
+        proj_counts = Project.objects.aggregate(
+            total=Count('id'),
+            active=Count('id', filter=Q(status='Active')),
+            completed=Count('id', filter=Q(status='Completed')),
+            delayed=Count('id', filter=Q(status='Delayed')),
+        )
+        total_projects = proj_counts['total'] or 0
+        active_projects = proj_counts['active'] or 0
+        completed_projects = proj_counts['completed'] or 0
+        delayed_projects = proj_counts['delayed'] or 0
+        active_sites = Site.objects.filter(status='Active').count()
+        pending_material_requests = MaterialRequest.objects.filter(status='Pending').count()
         low_stock_materials = Material.objects.filter(current_stock__lte=F('minimum_stock')).count()
         total_cost_agg = ProjectCost.objects.aggregate(total=Sum('amount'))
         total_project_cost = total_cost_agg['total'] or 0
@@ -35,6 +45,7 @@ class DashboardStatsView(APIView):
             'low_stock_materials': low_stock_materials,
             'total_project_cost': total_project_cost,
         })
+
 
 
 class ProjectMaterialSummaryView(APIView):

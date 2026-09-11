@@ -87,13 +87,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Support Neon PostgreSQL via DATABASE_URL or local fallback
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
+    db_config = dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        conn_health_checks=False,
+        ssl_require=True
+    )
+    db_config.setdefault('OPTIONS', {})
+    db_config['OPTIONS']['connect_timeout'] = 10
     DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True
-        )
+        'default': db_config
     }
 else:
     DATABASES = {
@@ -104,8 +107,19 @@ else:
             'PASSWORD': os.getenv('DB_PASSWORD', 'postgres123'),
             'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '5432'),
+            'CONN_MAX_AGE': 600,
         }
     }
+
+# Cache & Session Configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'erp-locmem-cache',
+        'TIMEOUT': 300,
+    }
+}
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

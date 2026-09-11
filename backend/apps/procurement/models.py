@@ -165,28 +165,3 @@ class PurchaseRequest(models.Model):
     def __str__(self):
         return self.request_number
 
-
-
-
-
-
-class PurchaseRequest(models.Model):
-    STATUS_CHOICES = (
-        ('Draft', 'Draft'),
-        ('Pending', 'Pending'),
-        ('Approved', 'Approved'),
-        ('Rejected', 'Rejected'),
-        ('Converted', 'Converted'),
-    )
-    request_number = models.CharField(max_length=50, unique=True)
-    project = models.ForeignKey('projects.Project', on_delete=models.CASCADE, related_name='purchase_requests')
-    site = models.ForeignKey('sites.Site', on_delete=models.CASCADE, related_name='purchase_requests')
-    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='purchase_requests')
-    request_date = models.DateField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Draft')
-    remarks = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.request_number

@@ -48,10 +48,10 @@ class SiteConsumptionViewSet(viewsets.ModelViewSet):
             data = response.data.get('results', response.data) if isinstance(response.data, dict) and 'results' in response.data else response.data
             
             from apps.inventory.models import ProjectMaterialStock
-            stocks = ProjectMaterialStock.objects.filter(project_id=project_id).select_related('boq_item')
+            stocks = ProjectMaterialStock.objects.filter(project_id=project_id).select_related('boq_item__material')
             issued_map = {}
             for stock in stocks:
-                mat_id = stock.boq_item.material_id if stock.boq_item.material else None
+                mat_id = stock.boq_item.material_id if stock.boq_item and stock.boq_item.material else None
                 if mat_id:
                     issued_map[mat_id] = issued_map.get(mat_id, 0) + stock.issued_qty
 
@@ -109,15 +109,16 @@ class SiteConsumptionViewSet(viewsets.ModelViewSet):
         projects = Project.objects.filter(
             material_requests__status__in=['Approved', 'Converted'],
             project_stocks__issued_qty__gt=0
-        ).distinct()
+        ).values('id', 'project_name', 'project_location').distinct()
         
-        data = []
-        for p in projects:
-            data.append({
-                'project_id': p.id,
-                'project_name': p.project_name,
-                'location': p.project_location
-            })
+        data = [
+            {
+                'project_id': p['id'],
+                'project_name': p['project_name'],
+                'location': p['project_location']
+            }
+            for p in projects
+        ]
         return Response(data)
 
     @action(detail=False, methods=['get'], url_path='project-summary')

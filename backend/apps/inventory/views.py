@@ -3,9 +3,19 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from decimal import Decimal
+from django.db.models import OuterRef, Subquery, Sum, DecimalField, Value
+from django.db.models.functions import Coalesce
 from .models import Material, StockTransaction, ProjectMaterialStock
 from .serializers import MaterialSerializer, StockTransactionSerializer, ProjectMaterialStockSerializer
 from apps.projects.models import BOQ
+from apps.subcontractors.models import SubcontractWorkOrder
+
+wo_alloc_subquery = SubcontractWorkOrder.objects.filter(
+    boq_item=OuterRef('boq_item')
+).exclude(status='Cancelled').values('boq_item').annotate(
+    total=Sum('contract_quantity')
+).values('total')
 
 class MaterialViewSet(viewsets.ModelViewSet):
     rbac_module = 'materials'
@@ -26,7 +36,15 @@ class StockTransactionViewSet(viewsets.ModelViewSet):
 
 class ProjectMaterialStockViewSet(viewsets.ReadOnlyModelViewSet):
     rbac_module = 'stock'
-    queryset = ProjectMaterialStock.objects.select_related('project', 'boq_item__material', 'boq_item__boq').order_by('-id')
+    queryset = ProjectMaterialStock.objects.select_related(
+        'project', 'boq_item__material', 'boq_item__boq'
+    ).annotate(
+        annotated_allocated_wo_qty=Coalesce(
+            Subquery(wo_alloc_subquery, output_field=DecimalField(max_digits=12, decimal_places=2)),
+            Value(Decimal('0.00')),
+            output_field=DecimalField(max_digits=12, decimal_places=2)
+        )
+    ).order_by('-id')
     serializer_class = ProjectMaterialStockSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['project', 'boq_item']
@@ -46,7 +64,7 @@ class ProjectMaterialStockViewSet(viewsets.ReadOnlyModelViewSet):
         to_date = request.query_params.get('to_date')
         
         # Base query for BOQs that have associated project material stocks
-        boq_qs = BOQ.objects.filter(items__project_stock__isnull=False).distinct().select_related('project').order_by('-id')
+        boq_qs = BOQ.objects.filter(items__project_stock__isnull=False).distinct().order_by('-id')
         
         if project_id:
             boq_qs = boq_qs.filter(project_id=project_id)
@@ -55,13 +73,15 @@ class ProjectMaterialStockViewSet(viewsets.ReadOnlyModelViewSet):
         if to_date:
             boq_qs = boq_qs.filter(bill_date__lte=to_date)
             
+        summary_rows = boq_qs.values('id', 'boq_number', 'project__project_name', 'bill_date')
         data = [
             {
-                'boq_id': boq.id,
-                'boq_number': boq.boq_number,
-                'project_name': boq.project.project_name,
-                'bill_date': str(boq.bill_date) if boq.bill_date else None
+                'boq_id': row['id'],
+                'boq_number': row['boq_number'],
+                'project_name': row['project__project_name'],
+                'bill_date': str(row['bill_date']) if row['bill_date'] else None
             }
-            for boq in boq_qs
+            for row in summary_rows
         ]
         return Response(data)
+

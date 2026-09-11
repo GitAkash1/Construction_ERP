@@ -24,28 +24,48 @@ ALL_PERMISSIONS = [
     'permissions.view', 'permissions.create', 'permissions.edit', 'permissions.delete',
 ]
 
+from django.core.cache import cache
+
+def invalidate_user_rbac_cache(user_id=None):
+    if user_id:
+        cache.delete(f"rbac_data_user_{user_id}")
+    else:
+        cache.clear()
+
 def get_user_rbac_data(user):
     """
     Returns user role name, role code, and list of permission codes.
+    Cached in memory to eliminate repeated DB round-trips.
     """
     if not user or not user.is_authenticated:
         return {'role': None, 'roleCode': None, 'permissions': []}
     
+    cache_key = f"rbac_data_user_{user.id}"
+    cached_data = cache.get(cache_key)
+    if cached_data is not None:
+        return cached_data
+    
     user_role = UserRole.objects.filter(user=user).select_related('role').first()
     if not user_role or not user_role.role.is_active:
-        return {'role': None, 'roleCode': None, 'permissions': []}
+        data = {'role': None, 'roleCode': None, 'permissions': []}
+        cache.set(cache_key, data, 60)
+        return data
     
     role = user_role.role
     if role.code == 'SUPER_ADMIN':
         db_perms = list(Permission.objects.filter(is_active=True).values_list('code', flat=True))
         all_perms = list(set(db_perms + ALL_PERMISSIONS))
-        return {'role': role.name, 'roleCode': role.code, 'permissions': all_perms}
+        data = {'role': role.name, 'roleCode': role.code, 'permissions': all_perms}
+        cache.set(cache_key, data, 60)
+        return data
     
     perms = list(
         RolePermission.objects.filter(role=role, permission__is_active=True)
         .values_list('permission__code', flat=True)
     )
-    return {'role': role.name, 'roleCode': role.code, 'permissions': perms}
+    data = {'role': role.name, 'roleCode': role.code, 'permissions': perms}
+    cache.set(cache_key, data, 60)
+    return data
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -73,12 +93,10 @@ class RBACPermission(permissions.BasePermission):
         if not request.user or not request.user.is_authenticated:
             return False
 
-        # Get user role
-        user_role = UserRole.objects.filter(user=request.user).select_related('role').first()
-        if not user_role or not user_role.role.is_active:
+        rbac_data = get_user_rbac_data(request.user)
+        role_code = rbac_data.get('roleCode')
+        if not role_code:
             return False
-
-        role_code = user_role.role.code
 
         # Super Admin bypasses all check constraints
         if role_code == 'SUPER_ADMIN':
@@ -109,9 +127,7 @@ class RBACPermission(permissions.BasePermission):
 
             required_perm = f"{rbac_module}.{action_type}"
 
-        # Verify role has required permission
-        return RolePermission.objects.filter(
-            role=user_role.role,
-            permission__code=required_perm,
-            permission__is_active=True
-        ).exists()
+        # Verify role has required permission from cached permissions list
+        user_perms = rbac_data.get('permissions', [])
+        return required_perm in user_perms
+
